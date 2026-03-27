@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitZone — Platform Olahraga & Fisik</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --c-bg:       #0a0a0f;
+    --c-surface:  #111118;
+    --c-card:     #16161f;
+    --c-border:   rgba(255,255,255,0.07);
+    --c-border2:  rgba(255,255,255,0.13);
+    --c-primary:  #3b82f6;
+    --c-accent:   #f97316;
+    --c-green:    #22c55e;
+    --c-text:     #f0f0f5;
+    --c-muted:    #8b8b9e;
+    --c-dim:      #5a5a6e;
+    --font-head:  'Bebas Neue', sans-serif;
+    --font-body:  'DM Sans', sans-serif;
+    --font-mono:  'JetBrains Mono', monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body);
+    background: var(--c-bg);
+    color: var(--c-text);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5vw;
+    height: 64px;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--c-border);
+  }
+  .nav-logo { font-family: var(--font-head); font-size: 28px; letter-spacing: 2px; color: var(--c-text); text-decoration: none; }
+  .nav-logo span { color: var(--c-primary); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { color: var(--c-muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color .2s; }
+  .nav-links a:hover { color: var(--c-text); }
+  .nav-cta {
+    background: var(--c-primary); color: white;
+    border: none; padding: 9px 22px; border-radius: 8px;
+    font-family: var(--font-body); font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: background .2s, transform .15s;
+  }
+  .nav-cta:hover { background: #2563eb; transform: translateY(-1px); }
+  .burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+  .burger span { width: 24px; height: 2px; background: var(--c-text); border-radius: 2px; transition: all .3s; }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 100px 5vw 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-grid { position: absolute; inset: 0; opacity: .04; pointer-events: none;
+    background-image: linear-gradient(var(--c-text) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--c-text) 1px, transparent 1px);
+    background-size: 48px 48px; }
+  .hero-glow {
+    position: absolute; top: 20%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner { max-width: 760px; position: relative; z-index: 1; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.3);
+    color: var(--c-primary); padding: 6px 14px; border-radius: 100px;
+    font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .hero-tag::before { content: ''; width: 6px; height: 6px; background: var(--c-primary); border-radius: 50%; animation: pulse-dot 2s infinite; }
+  @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+  h1 {
+    font-family: var(--font-head);
+    font-size: clamp(56px, 9vw, 110px);
+    line-height: .95;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+  }
+  h1 .accent { color: var(--c-accent); }
+  h1 .blue   { color: var(--c-primary); }
+  .hero-desc { font-size: 18px; color: var(--c-muted); max-width: 520px; margin-bottom: 36px; line-height: 1.7; }
+  .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--c-primary); color: white;
+    padding: 14px 32px; border-radius: 10px; border: none;
+    font-size: 15px; font-weight: 600; cursor: pointer;
+    transition: all .2s; text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover { background: #2563eb; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(59,130,246,0.3); }
+  .btn-ghost {
+    background: transparent; color: var(--c-text);
+    padding: 14px 32px; border-radius: 10px;
+    border: 1px solid var(--c-border2);
+    font-size: 15px; font-weight: 500; cursor: pointer;
+    transition: all .2s; text-decoration: none; display: inline-block;
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.05); }
+  .hero-stats {
+    display: flex; gap: 36px; margin-top: 48px;
+    border-top: 1px solid var(--c-border); padding-top: 32px;
+  }
+  .h-stat-num { font-family: var(--font-head); font-size: 36px; color: var(--c-text); }
+  .h-stat-lbl { font-size: 12px; color: var(--c-muted); margin-top: 2px; }
+
+  /* ── SECTION BASE ── */
+  section { padding: 80px 5vw; }
+  .sec-label { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--c-primary); margin-bottom: 12px; }
+  .sec-title { font-family: var(--font-head); font-size: clamp(32px, 5vw, 56px); letter-spacing: 1px; margin-bottom: 14px; }
+  .sec-sub { color: var(--c-muted); font-size: 16px; max-width: 540px; line-height: 1.7; margin-bottom: 48px; }
+
+  /* ── PROGRAM TRACKER ── */
+  #tracker { background: var(--c-surface); }
+  .tracker-wrap { background: var(--c-card); border: 1px solid var(--c-border); border-radius: 16px; padding: 28px; max-width: 900px; }
+  .tracker-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+  .tracker-title { font-size: 16px; font-weight: 600; }
+  .tracker-day { font-family: var(--font-mono); font-size: 13px; color: var(--c-muted); }
+  .ex-rows { display: flex; flex-direction: column; gap: 10px; }
+  .ex-row {
+    display: grid; grid-template-columns: 1fr 90px 110px 80px;
+    align-items: center; gap: 12px;
+    background: rgba(255,255,255,0.03); border: 1px solid var(--c-border);
+    border-radius: 10px; padding: 12px 16px;
+    transition: border-color .2s;
+  }
+  .ex-row:hover { border-color: var(--c-border2); }
+  .ex-row.done { border-color: rgba(34,197,94,0.3); background: rgba(34,197,94,0.04); }
+  .ex-name-row { font-size: 14px; font-weight: 500; }
+  .ex-target { font-family: var(--font-mono); font-size: 13px; color: var(--c-primary); }
+  .progress-bar-wrap { height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; position: relative; }
+  .progress-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--c-primary), #8b5cf6); transition: width .4s ease; }
+  .ex-row.done .progress-bar-fill { background: linear-gradient(90deg, var(--c-green), #86efac); }
+  .check-btn {
+    width: 32px; height: 32px; border-radius: 8px;
+    border: 1.5px solid var(--c-border2); background: transparent;
+    color: var(--c-muted); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; transition: all .2s; margin-left: auto;
+  }
+  .check-btn:hover { border-color: var(--c-green); color: var(--c-green); }
+  .ex-row.done .check-btn { background: var(--c-green); border-color: var(--c-green); color: white; }
+  .tracker-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; flex-wrap: wrap; gap: 12px; }
+  .total-score { font-family: var(--font-head); font-size: 36px; color: var(--c-text); }
+  .total-score span { font-size: 14px; font-weight: 400; font-family: var(--font-body); color: var(--c-muted); }
+  .reset-btn { background: transparent; border: 1px solid var(--c-border2); color: var(--c-muted); padding: 8px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all .2s; }
+  .reset-btn:hover { border-color: var(--c-border); color: var(--c-text); }
+  .session-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+  .sess-tab { padding: 7px 18px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid var(--c-border); background: transparent; color: var(--c-muted); transition: all .2s; }
+  .sess-tab.active { background: var(--c-primary); border-color: var(--c-primary); color: white; }
+
+  /* ── FITUR ── */
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  .feat-card {
+    background: var(--c-card); border: 1px solid var(--c-border);
+    border-radius: 14px; padding: 24px 22px;
+    transition: border-color .2s, transform .2s;
+  }
+  .feat-card:hover { border-color: var(--c-border2); transform: translateY(-3px); }
+  .feat-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; margin-bottom: 16px;
+  }
+  .feat-icon.blue   { background: rgba(59,130,246,0.15); }
+  .feat-icon.orange { background: rgba(249,115,22,0.15); }
+  .feat-icon.green  { background: rgba(34,197,94,0.15); }
+  .feat-icon.purple { background: rgba(139,92,246,0.15); }
+  .feat-icon.pink   { background: rgba(236,72,153,0.15); }
+  .feat-icon.cyan   { background: rgba(6,182,212,0.15); }
+  .feat-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+  .feat-desc { font-size: 13px; color: var(--c-muted); line-height: 1.6; }
+
+  /* ── WORKOUT LIBRARY ── */
+  #library { background: var(--c-surface); }
+  .lib-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+  .filter-btn {
+    padding: 7px 16px; border-radius: 100px; font-size: 13px; font-weight: 500;
+    border: 1px solid var(--c-border); background: transparent; color: var(--c-muted);
+    cursor: pointer; transition: all .2s;
+  }
+  .filter-btn.active, .filter-btn:hover { background: var(--c-primary); border-color: var(--c-primary); color: white; }
+  .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+  .lib-card {
+    background: var(--c-card); border: 1px solid var(--c-border);
+    border-radius: 12px; overflow: hidden; cursor: pointer;
+    transition: all .2s;
+  }
+  .lib-card:hover { border-color: var(--c-border2); transform: translateY(-2px); }
+  .lib-img {
+    height: 110px; display: flex; align-items: center; justify-content: center;
+    font-size: 42px;
+  }
+  .lib-body { padding: 14px; }
+  .lib-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .lib-meta { font-size: 12px; color: var(--c-muted); }
+  .lib-badge { display: inline-block; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; padding: 3px 8px; border-radius: 4px; margin-top: 8px; }
+  .badge-easy   { background: rgba(34,197,94,0.15); color: var(--c-green); }
+  .badge-medium { background: rgba(249,115,22,0.15); color: var(--c-accent); }
+  .badge-hard   { background: rgba(239,68,68,0.15);  color: #ef4444; }
+
+  /* ── TIMER ── */
+  .timer-wrap {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 900px;
+  }
+  .timer-card {
+    background: var(--c-card); border: 1px solid var(--c-border);
+    border-radius: 16px; padding: 28px; text-align: center;
+  }
+  .timer-card h3 { font-size: 14px; color: var(--c-muted); margin-bottom: 16px; font-weight: 500; }
+  .timer-display {
+    font-family: var(--font-head); font-size: 72px; color: var(--c-text);
+    line-height: 1; margin-bottom: 20px; letter-spacing: 3px;
+  }
+  .timer-display.running { color: var(--c-primary); }
+  .timer-display.rest    { color: var(--c-accent); }
+  .timer-controls { display: flex; gap: 10px; justify-content: center; }
+  .timer-btn {
+    padding: 10px 22px; border-radius: 9px; font-size: 14px; font-weight: 600;
+    cursor: pointer; border: none; transition: all .2s;
+  }
+  .timer-btn.start  { background: var(--c-primary); color: white; }
+  .timer-btn.start:hover { background: #2563eb; }
+  .timer-btn.stop   { background: rgba(239,68,68,0.2); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+  .timer-btn.reset2 { background: rgba(255,255,255,0.06); color: var(--c-muted); border: 1px solid var(--c-border); }
+  .timer-setting { display: flex; align-items: center; gap: 10px; justify-content: center; margin-bottom: 16px; }
+  .timer-setting label { font-size: 13px; color: var(--c-muted); }
+  .timer-setting input[type=number] {
+    width: 64px; padding: 6px 10px; background: rgba(255,255,255,0.06);
+    border: 1px solid var(--c-border); border-radius: 6px; color: var(--c-text);
+    font-family: var(--font-mono); font-size: 14px; text-align: center;
+  }
+  .interval-info { font-size: 12px; color: var(--c-muted); margin-top: 10px; }
+
+  /* ── PROGRESS CHART ── */
+  .chart-area {
+    background: var(--c-card); border: 1px solid var(--c-border);
+    border-radius: 16px; padding: 28px; max-width: 900px;
+  }
+  .chart-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+  .chart-title { font-size: 16px; font-weight: 600; }
+  .week-select {
+    padding: 6px 12px; background: rgba(255,255,255,0.06);
+    border: 1px solid var(--c-border); border-radius: 6px; color: var(--c-text);
+    font-family: var(--font-body); font-size: 13px; cursor: pointer;
+  }
+  .bar-chart { display: flex; align-items: flex-end; gap: 10px; height: 160px; padding-bottom: 4px; }
+  .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
+  .bar {
+    width: 100%; border-radius: 6px 6px 0 0;
+    background: linear-gradient(to top, var(--c-primary), rgba(139,92,246,0.8));
+    transition: height .6s cubic-bezier(.22,1,.36,1), opacity .2s;
+    cursor: pointer; min-height: 4px;
+  }
+  .bar:hover { opacity: .8; }
+  .bar-day { font-size: 11px; color: var(--c-dim); }
+  .bar-val { font-family: var(--font-mono); font-size: 11px; color: var(--c-muted); }
+  .chart-legend { display: flex; gap: 20px; margin-top: 16px; flex-wrap: wrap; }
+  .leg-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--c-muted); }
+  .leg-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+  /* ── BMI CALC ── */
+  .bmi-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 860px; }
+  .bmi-form {
+    background: var(--c-card); border: 1px solid var(--c-border);
+    border-radius: 16px; padding: 28px;
+  }
+  .bmi-form h3 { font-size: 15px; font-weight: 600; margin-bottom: 20px; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 13px; color: var(--c-muted); margin-bottom: 6px; }
+  .form-group input {
+    width: 100%; padding: 11px 14px;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--c-border);
+    border-radius: 8px; color: var(--c-text); font-size: 15px;
+    font-family: var(--font-body); transition: border-color .2s;
+    -moz-appearance: textfield;
+  }
+  .form-group input:focus { outline: none; border-color: var(--c-primary); }
+  .form-group input::-webkit-outer-spin-button,
+  .form-group input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .bmi-result {
+    background: var(--c-card); border: 1px solid var(--c-border);
+    border-radius: 16px; padding: 28px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+  }
+  .bmi-number { font-family: var(--font-head); font-size: 80px; line-height: 1; margin-bottom: 8px; }
+  .bmi-cat { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+  .bmi-msg { font-size: 13px; color: var(--c-muted); line-height: 1.6; }
+  .bmi-meter { width: 100%; height: 8px; border-radius: 4px; margin: 16px 0 8px;
+    background: linear-gradient(90deg, #22c55e, #eab308, #f97316, #ef4444); position: relative; }
+  .bmi-pointer { position: absolute; top: -4px; width: 16px; height: 16px; background: white; border-radius: 50%; transform: translateX(-50%); transition: left .6s ease; box-shadow: 0 0 0 3px rgba(255,255,255,0.2); }
+
+  /* ── JADWAL ── */
+  .schedule-table {
+    width: 100%; border-collapse: collapse; max-width: 900px;
+  }
+  .schedule-table th {
+    background: rgba(59,130,246,0.15); color: var(--c-primary);
+    padding: 12px 16px; text-align: left; font-size: 12px;
+    font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
+  }
+  .schedule-table th:first-child { border-radius: 10px 0 0 0; }
+  .schedule-table th:last-child  { border-radius: 0 10px 0 0; }
+  .schedule-table td { padding: 13px 16px; font-size: 14px; border-bottom: 1px solid var(--c-border); }
+  .schedule-table tr:last-child td { border-bottom: none; }
+  .schedule-table tbody tr:hover td { background: rgba(255,255,255,0.02); }
+  .sched-tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 5px; }
+  .sched-tag.morning { background: rgba(234,179,8,0.15);  color: #eab308; }
+  .sched-tag.rest    { background: rgba(139,92,246,0.15); color: #a78bfa; }
+  .sched-tag.cardio  { background: rgba(6,182,212,0.15);  color: #22d3ee; }
+
+  /* ── PANDUAN ── */
+  #panduan { background: var(--c-surface); }
+  .steps-wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; counter-reset: step-counter; }
+  .step-card {
+    background: var(--c-card); border: 1px solid var(--c-border);
+    border-radius: 14px; padding: 24px; position: relative;
+    counter-increment: step-counter;
+  }
+  .step-card::before {
+    content: counter(step-counter, decimal-leading-zero);
+    font-family: var(--font-head); font-size: 52px; color: rgba(59,130,246,0.12);
+    position: absolute; top: 16px; right: 20px; line-height: 1;
+  }
+  .step-num { font-family: var(--font-mono); font-size: 11px; color: var(--c-primary); font-weight: 500; margin-bottom: 10px; }
+  .step-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+  .step-desc { font-size: 13px; color: var(--c-muted); line-height: 1.6; }
+  .step-link { font-size: 12px; color: var(--c-primary); margin-top: 10px; display: inline-block; text-decoration: none; }
+  .step-link:hover { text-decoration: underline; }
+
+  /* ── HOSTING ── */
+  .hosting-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  .host-card {
+    background: var(--c-card); border: 1px solid var(--c-border);
+    border-radius: 14px; padding: 24px; transition: all .2s;
+  }
+  .host-card:hover { border-color: var(--c-border2); transform: translateY(-3px); }
+  .host-card.recommended { border-color: rgba(59,130,246,0.4); }
+  .host-badge { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; padding: 4px 10px; border-radius: 4px; margin-bottom: 14px; display: inline-block; }
+  .host-badge.rec-badge { background: rgba(59,130,246,0.15); color: var(--c-primary); }
+  .host-badge.pop-badge { background: rgba(34,197,94,0.15); color: var(--c-green); }
+  .host-name { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+  .host-tag  { font-size: 13px; color: var(--c-muted); margin-bottom: 14px; }
+  .host-features { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .host-features li { font-size: 13px; color: var(--c-muted); display: flex; align-items: flex-start; gap: 8px; }
+  .host-features li::before { content: '✓'; color: var(--c-green); font-weight: 700; flex-shrink: 0; }
+  .host-btn {
+    display: block; text-align: center; margin-top: 18px;
+    padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    text-decoration: none; transition: all .2s;
+    border: 1px solid var(--c-border2); color: var(--c-text);
+  }
+  .host-btn:hover { background: rgba(255,255,255,0.05); }
+  .host-card.recommended .host-btn { background: var(--c-primary); border-color: var(--c-primary); color: white; }
+  .host-card.recommended .host-btn:hover { background: #2563eb; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 40px 5vw 30px;
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .footer-logo { font-family: var(--font-head); font-size: 24px; letter-spacing: 2px; }
+  .footer-logo span { color: var(--c-primary); }
+  .footer-copy { font-size: 13px; color: var(--c-dim); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px; opacity: 0; pointer-events: none; transition: opacity .25s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--c-card); border: 1px solid var(--c-border2);
+    border-radius: 18px; padding: 32px; max-width: 480px; width: 100%;
+    transform: translateY(20px); transition: transform .25s;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .modal-sub   { font-size: 14px; color: var(--c-muted); margin-bottom: 24px; line-height: 1.6; }
+  .modal-close { float: right; background: none; border: none; color: var(--c-muted); font-size: 22px; cursor: pointer; margin-top: -4px; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 300;
+    background: var(--c-card); border: 1px solid var(--c-border2);
+    padding: 12px 20px; border-radius: 10px; font-size: 14px;
+    transform: translateY(80px); opacity: 0; transition: all .3s;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ── SCROLL ANIM ── */
+  .fade-up { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width: 768px) {
+    .nav-links, .nav-cta { display: none; }
+    .burger { display: flex; }
+    .nav-links.open { display: flex; flex-direction: column; position: fixed; top: 64px; left: 0; right: 0; background: var(--c-surface); padding: 20px 5vw; border-bottom: 1px solid var(--c-border); z-index: 99; }
+    .nav-cta.open { display: block; margin: 0 5vw 16px; }
+    .hero-stats { gap: 20px; }
+    .timer-wrap, .bmi-wrap { grid-template-columns: 1fr; }
+    .ex-row { grid-template-columns: 1fr 80px 90px 40px; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">FIT<span>ZONE</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#tracker">Tracker</a></li>
+    <li><a href="#fitur">Fitur</a></li>
+    <li><a href="#library">Library</a></li>
+    <li><a href="#timer">Timer</a></li>
+    <li><a href="#panduan">Panduan</a></li>
+    <li><a href="#hosting">Hosting</a></li>
+  </ul>
+  <button class="nav-cta" onclick="openModal()">Mulai Gratis</button>
+  <div class="burger" id="burger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div class="hero-tag">Platform Olahraga #1 Indonesia</div>
+    <h1>LATIHAN<br><span class="accent">LEBIH</span><br><span class="blue">CERDAS</span></h1>
+    <p class="hero-desc">
+      Track program latihan, hitung BMI, gunakan timer interval, dan akses 50+ gerakan olahraga — semuanya gratis, semua di satu tempat.
+    </p>
+    <div class="hero-btns">
+      <a href="#tracker" class="btn-primary">Mulai Sekarang</a>
+      <a href="#panduan" class="btn-ghost">Panduan Penggunaan</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="h-stat-num" id="cnt-users">0</div><div class="h-stat-lbl">Pengguna Aktif</div></div>
+      <div><div class="h-stat-num" id="cnt-ex">0</div><div class="h-stat-lbl">Gerakan Tersedia</div></div>
+      <div><div class="h-stat-num" id="cnt-prog">0</div><div class="h-stat-lbl">Program Latihan</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TRACKER -->
+<section id="tracker">
+  <div class="sec-label fade-up">Program Harian</div>
+  <div class="sec-title fade-up">Workout Tracker</div>
+  <p class="sec-sub fade-up">Centang setiap gerakan setelah selesai. Progress tersimpan otomatis.</p>
+  <div class="tracker-wrap fade-up">
+    <div class="tracker-header">
+      <span class="tracker-title">Sesi Latihan</span>
+      <span class="tracker-day" id="today-date"></span>
+    </div>
+    <div class="session-tabs">
+      <button class="sess-tab active" onclick="switchSession('pagi', this)">🌅 Pagi</button>
+      <button class="sess-tab" onclick="switchSession('sore', this)">🌆 Sore</button>
+    </div>
+    <div class="ex-rows" id="exRows"></div>
+    <div class="tracker-footer">
+      <div>
+        <div class="total-score" id="totalScore">0 <span>/ 6 selesai</span></div>
+      </div>
+      <button class="reset-btn" onclick="resetTracker()">Reset Sesi</button>
+    </div>
+  </div>
+</section>
+
+<!-- FITUR -->
+<section id="fitur">
+  <div class="sec-label fade-up">Semua Yang Anda Butuhkan</div>
+  <div class="sec-title fade-up">Fitur Lengkap</div>
+  <p class="sec-sub fade-up">Dirancang khusus untuk mendukung perjalanan kebugaran Anda dari awal hingga mahir.</p>
+  <div class="features-grid">
+    <div class="feat-card fade-up">
+      <div class="feat-icon blue">📋</div>
+      <div class="feat-title">Program Builder</div>
+      <div class="feat-desc">Buat & simpan program latihan personal sesuai tujuan: fat loss, muscle gain, atau stamina.</div>
+    </div>
+    <div class="feat-card fade-up">
+      <div class="feat-icon orange">⏱</div>
+      <div class="feat-title">Interval Timer</div>
+      <div class="feat-desc">Timer HIIT & Tabata dengan bunyi notifikasi. Set work/rest sesuai kebutuhan Anda.</div>
+    </div>
+    <div class="feat-card fade-up">
+      <div class="feat-icon green">📊</div>
+      <div class="feat-title">Progress Analytics</div>
+      <div class="feat-desc">Grafik mingguan menampilkan konsistensi latihan, kalori estimasi, dan streak hari berturut-turut.</div>
+    </div>
+    <div class="feat-card fade-up">
+      <div class="feat-icon purple">🧮</div>
+      <div class="feat-title">Kalkulator BMI & TDEE</div>
+      <div class="feat-desc">Hitung Body Mass Index dan kebutuhan kalori harian berdasarkan usia, berat, dan aktivitas.</div>
+    </div>
+    <div class="feat-card fade-up">
+      <div class="feat-icon pink">🎯</div>
+      <div class="feat-title">Goal Tracker</div>
+      <div class="feat-desc">Tetapkan target mingguan dan dapatkan reminder otomatis agar tetap di jalur yang benar.</div>
+    </div>
+    <div class="feat-card fade-up">
+      <div class="feat-icon cyan">📚</div>
+      <div class="feat-title">Exercise Library</div>
+      <div class="feat-desc">50+ gerakan dengan panduan teknik, otot yang dilatih, dan variasi untuk semua level.</div>
+    </div>
+  </div>
+</section>
+
+<!-- EXERCISE LIBRARY -->
+<section id="library">
+  <div class="sec-label fade-up">Panduan Gerakan</div>
+  <div class="sec-title fade-up">Exercise Library</div>
+  <p class="sec-sub fade-up">Temukan gerakan yang tepat untuk setiap bagian tubuh.</p>
+  <div class="lib-filters fade-up">
+    <button class="filter-btn active" onclick="filterLib('all', this)">Semua</button>
+    <button class="filter-btn" onclick="filterLib('tubuh-atas', this)">Tubuh Atas</button>
+    <button class="filter-btn" onclick="filterLib('tubuh-bawah', this)">Tubuh Bawah</button>
+    <button class="filter-btn" onclick="filterLib('core', this)">Core / Perut</button>
+    <button class="filter-btn" onclick="filterLib('kardio', this)">Kardio</button>
+    <button class="filter-btn" onclick="filterLib('isometrik', this)">Isometrik</button>
+  </div>
+  <div class="lib-grid" id="libGrid"></div>
+</section>
+
+<!-- TIMER -->
+<section id="timer">
+  <div class="sec-label fade-up">Tools Latihan</div>
+  <div class="sec-title fade-up">Workout Timer</div>
+  <p class="sec-sub fade-up">Stopwatch dan timer interval untuk sesi latihan yang lebih terstruktur.</p>
+  <div class="timer-wrap fade-up">
+    <div class="timer-card">
+      <h3>Stopwatch</h3>
+      <div class="timer-display" id="sw-display">00:00</div>
+      <div class="timer-controls">
+        <button class="timer-btn start" id="sw-btn" onclick="toggleSW()">Mulai</button>
+        <button class="timer-btn reset2" onclick="resetSW()">Reset</button>
+      </div>
+    </div>
+    <div class="timer-card">
+      <h3>Interval Timer (HIIT)</h3>
+      <div class="timer-setting">
+        <label>Kerja (dtk)</label>
+        <input type="number" id="work-sec" value="40" min="5" max="120">
+        <label>Istirahat (dtk)</label>
+        <input type="number" id="rest-sec" value="20" min="5" max="60">
+      </div>
+      <div class="timer-display" id="it-display">00:40</div>
+      <div style="font-size:13px;color:var(--c-muted);margin-bottom:10px;" id="it-phase">Fase: Kerja</div>
+      <div class="timer-controls">
+        <button class="timer-btn start" id="it-btn" onclick="toggleIT()">Mulai</button>
+        <button class="timer-btn reset2" onclick="resetIT()">Reset</button>
+      </div>
+      <div class="interval-info" id="it-rounds">Putaran: 0</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRESS -->
+<section id="progress">
+  <div class="sec-label fade-up">Lacak Kemajuan</div>
+  <div class="sec-title fade-up">Progress Mingguan</div>
+  <p class="sec-sub fade-up">Visualisasi konsistensi latihan Anda dalam 7 hari terakhir.</p>
+  <div class="chart-area fade-up">
+    <div class="chart-hdr">
+      <span class="chart-title">Sesi Selesai per Hari</span>
+      <select class="week-select" onchange="updateChart(this.value)">
+        <option value="this">Minggu Ini</option>
+        <option value="last">Minggu Lalu</option>
+      </select>
+    </div>
+    <div class="bar-chart" id="barChart"></div>
+    <div class="chart-legend">
+      <div class="leg-item"><div class="leg-dot" style="background:linear-gradient(var(--c-primary),#8b5cf6)"></div> Sesi Latihan</div>
+      <div class="leg-item" style="margin-left:auto; font-family:var(--font-mono); font-size:12px;" id="totalWeek"></div>
+    </div>
+  </div>
+</section>
+
+<!-- BMI -->
+<section id="bmi" style="background:var(--c-surface)">
+  <div class="sec-label fade-up">Kesehatan</div>
+  <div class="sec-title fade-up">Kalkulator BMI</div>
+  <p class="sec-sub fade-up">Masukkan data Anda untuk mengetahui indeks massa tubuh dan rekomendasi latihan.</p>
+  <div class="bmi-wrap fade-up">
+    <div class="bmi-form">
+      <h3>Data Anda</h3>
+      <div class="form-group"><label>Berat Badan (kg)</label><input type="number" id="bmi-weight" placeholder="70" oninput="calcBMI()"></div>
+      <div class="form-group"><label>Tinggi Badan (cm)</label><input type="number" id="bmi-height" placeholder="170" oninput="calcBMI()"></div>
+      <div class="form-group"><label>Usia</label><input type="number" id="bmi-age" placeholder="25" oninput="calcBMI()"></div>
+    </div>
+    <div class="bmi-result" id="bmiResult">
+      <div style="font-size:14px;color:var(--c-muted)">Masukkan data<br>untuk melihat hasil</div>
+    </div>
+  </div>
+</section>
+
+<!-- JADWAL -->
+<section id="jadwal">
+  <div class="sec-label fade-up">Rencana Latihan</div>
+  <div class="sec-title fade-up">Jadwal Mingguan</div>
+  <p class="sec-sub fade-up">Template jadwal yang bisa disesuaikan dengan program Anda.</p>
+  <div class="fade-up" style="overflow-x:auto;">
+  <table class="schedule-table">
+    <thead>
+      <tr><th>Hari</th><th>Sesi Pagi</th><th>Sesi Sore</th><th>Fokus</th><th>Status</th></tr>
+    </thead>
+    <tbody id="schedBody"></tbody>
+  </table>
+  </div>
+</section>
+
+<!-- PANDUAN -->
+<section id="panduan">
+  <div class="sec-label fade-up">Cara Menggunakan</div>
+  <div class="sec-title fade-up">Panduan Akses Mudah</div>
+  <p class="sec-sub fade-up">Ikuti 6 langkah ini untuk memulai perjalanan kebugaran Anda hari ini.</p>
+  <div class="steps-wrap">
+    <div class="step-card fade-up">
+      <div class="step-num">Langkah 01</div>
+      <div class="step-title">Buka Website</div>
+      <div class="step-desc">Akses FitZone dari browser HP atau laptop. Tidak perlu install — langsung buka dan gunakan.</div>
+    </div>
+    <div class="step-card fade-up">
+      <div class="step-num">Langkah 02</div>
+      <div class="step-title">Pilih Program</div>
+      <div class="step-desc">Pilih program latihan sesuai tujuan: Pemula, Menengah, atau Lanjut. Bisa juga buat program sendiri.</div>
+    </div>
+    <div class="step-card fade-up">
+      <div class="step-num">Langkah 03</div>
+      <div class="step-title">Gunakan Tracker</div>
+      <div class="step-desc">Buka bagian Workout Tracker, pilih sesi Pagi atau Sore, lalu centang setiap gerakan yang selesai.</div>
+    </div>
+    <div class="step-card fade-up">
+      <div class="step-num">Langkah 04</div>
+      <div class="step-title">Aktifkan Timer</div>
+      <div class="step-desc">Gunakan Stopwatch atau Interval Timer HIIT untuk mengontrol waktu latihan dan istirahat.</div>
+    </div>
+    <div class="step-card fade-up">
+      <div class="step-num">Langkah 05</div>
+      <div class="step-title">Cek Progres</div>
+      <div class="step-desc">Pantau konsistensi latihan mingguan di bagian Progress. Streak membantu Anda tetap termotivasi.</div>
+    </div>
+    <div class="step-card fade-up">
+      <div class="step-num">Langkah 06</div>
+      <div class="step-title">Hitung BMI</div>
+      <div class="step-desc">Masukkan berat dan tinggi badan di kalkulator BMI untuk mendapatkan rekomendasi program yang sesuai.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOSTING -->
+<section id="hosting">
+  <div class="sec-label fade-up">Deploy Website</div>
+  <div class="sec-title fade-up">Rekomendasi Hosting Gratis</div>
+  <p class="sec-sub fade-up">Platform-platform ini digunakan oleh jutaan developer profesional di seluruh dunia — semua gratis.</p>
+  <div class="hosting-grid">
+    <div class="host-card recommended fade-up">
+      <span class="host-badge rec-badge">⭐ Paling Direkomendasikan</span>
+      <div class="host-name">Vercel</div>
+      <div class="host-tag">Digunakan oleh Next.js, startup Silicon Valley, dan ratusan ribu developer</div>
+      <ul class="host-features">
+        <li>Deploy dalam hitungan detik via drag &amp; drop</li>
+        <li>SSL otomatis + domain gratis (.vercel.app)</li>
+        <li>CDN global — cepat di Indonesia</li>
+        <li>Integrasi GitHub otomatis</li>
+        <li>100GB bandwidth/bulan gratis</li>
+        <li>Preview URL setiap push commit</li>
+      </ul>
+      <a href="https://vercel.com" class="host-btn" target="_blank">Buka Vercel →</a>
+    </div>
+    <div class="host-card fade-up">
+      <span class="host-badge pop-badge">🔥 Paling Populer</span>
+      <div class="host-name">Netlify</div>
+      <div class="host-tag">Platform favorit untuk static sites dan JAMstack — dipakai 3 juta+ developer</div>
+      <ul class="host-features">
+        <li>Drag &amp; drop folder HTML langsung deploy</li>
+        <li>SSL gratis + subdomain .netlify.app</li>
+        <li>Form handling bawaan</li>
+        <li>100GB bandwidth/bulan gratis</li>
+        <li>Continuous deployment dari Git</li>
+        <li>Split testing A/B gratis</li>
+      </ul>
+      <a href="https://netlify.com" class="host-btn" target="_blank">Buka Netlify →</a>
+    </div>
+    <div class="host-card fade-up">
+      <span class="host-badge" style="background:rgba(249,115,22,0.15);color:var(--c-accent)">🐙 Developer Friendly</span>
+      <div class="host-name">GitHub Pages</div>
+      <div class="host-tag">Hosting resmi dari GitHub — digunakan untuk dokumentasi dan portofolio developer global</div>
+      <ul class="host-features">
+        <li>Gratis sepenuhnya tanpa batas waktu</li>
+        <li>Domain username.github.io</li>
+        <li>Update otomatis dari repository</li>
+        <li>SSL gratis bawaan</li>
+        <li>Dipakai oleh Facebook, Google, Twitter</li>
+        <li>Unlimited bandwidth untuk static site</li>
+      </ul>
+      <a href="https://pages.github.com" class="host-btn" target="_blank">Buka GitHub Pages →</a>
+    </div>
+  </div>
+  <div style="margin-top:28px; padding:20px 24px; background:rgba(59,130,246,0.06); border:1px solid rgba(59,130,246,0.2); border-radius:12px; max-width:760px;">
+    <div style="font-size:14px;font-weight:600;margin-bottom:8px;">💡 Cara Deploy Tercepat (Vercel)</div>
+    <div style="font-size:13px;color:var(--c-muted);line-height:1.8;">
+      1. Simpan file HTML ini sebagai <code style="background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:4px;">index.html</code><br>
+      2. Buka <strong>vercel.com</strong> → klik "Add New Project"<br>
+      3. Drag &amp; drop folder berisi file → klik Deploy<br>
+      4. Website online dalam &lt; 30 detik dengan URL gratis!
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">FIT<span>ZONE</span></div>
+  <div class="footer-copy">© 2025 FitZone — Platform Olahraga Gratis untuk Indonesia</div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
+    <div class="modal-title">Selamat Datang di FitZone!</div>
+    <div class="modal-sub">Website ini gratis sepenuhnya. Tidak ada akun yang diperlukan — langsung scroll ke bawah dan mulai gunakan Tracker, Timer, dan semua fitur lainnya!</div>
+    <button class="btn-primary" style="width:100%" onclick="document.getElementById('modal').classList.remove('open');document.getElementById('tracker').scrollIntoView({behavior:'smooth'})">Mulai Latihan →</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ──
+const exercises = [
+  { name: "Push Up", target: "50 rep × 3 set", sets: 3, reps: 50, type: "rep", muscle: "Dada, Bahu, Trisep" },
+  { name: "Body Squat", target: "50 rep", sets: 1, reps: 50, type: "rep", muscle: "Paha, Bokong" },
+  { name: "Lunges", target: "50 rep", sets: 1, reps: 50, type: "rep", muscle: "Paha depan & belakang" },
+  { name: "Sit Up", target: "50 rep", sets: 1, reps: 50, type: "rep", muscle: "Perut, Core" },
+  { name: "Wall Sit", target: "50 detik", sets: 1, reps: 50, type: "hold", muscle: "Paha, Betis" },
+  { name: "Plank", target: "50 detik", sets: 1, reps: 50, type: "hold", muscle: "Core, Punggung" },
+];
+
+const library = [
+  { name:"Push Up", cat:"tubuh-atas", icon:"💪", muscle:"Dada, Bahu", level:"easy" },
+  { name:"Pull Up", cat:"tubuh-atas", icon:"🏋️", muscle:"Punggung, Bisep", level:"hard" },
+  { name:"Dips", cat:"tubuh-atas", icon:"🤸", muscle:"Trisep, Dada", level:"medium" },
+  { name:"Pike Push Up", cat:"tubuh-atas", icon:"🔼", muscle:"Bahu, Trisep", level:"medium" },
+  { name:"Diamond Push Up", cat:"tubuh-atas", icon:"💎", muscle:"Trisep, Dada dalam", level:"medium" },
+  { name:"Body Squat", cat:"tubuh-bawah", icon:"🦵", muscle:"Paha, Bokong", level:"easy" },
+  { name:"Lunges", cat:"tubuh-bawah", icon:"👟", muscle:"Paha depan & belakang", level:"easy" },
+  { name:"Jump Squat", cat:"tubuh-bawah", icon:"⬆️", muscle:"Paha, Betis", level:"medium" },
+  { name:"Bulgarian Split Squat", cat:"tubuh-bawah", icon:"🔪", muscle:"Paha, Bokong", level:"hard" },
+  { name:"Calf Raise", cat:"tubuh-bawah", icon:"🧦", muscle:"Betis", level:"easy" },
+  { name:"Sit Up", cat:"core", icon:"🏃", muscle:"Perut atas", level:"easy" },
+  { name:"Plank", cat:"core", icon:"📏", muscle:"Core, Punggung", level:"easy" },
+  { name:"Crunches", cat:"core", icon:"🥐", muscle:"Perut atas", level:"easy" },
+  { name:"Leg Raise", cat:"core", icon:"🦿", muscle:"Perut bawah", level:"medium" },
+  { name:"Russian Twist", cat:"core", icon:"🌀", muscle:"Oblique", level:"medium" },
+  { name:"Mountain Climber", cat:"kardio", icon:"🏔️", muscle:"Full Body", level:"medium" },
+  { name:"Burpee", cat:"kardio", icon:"💥", muscle:"Full Body", level:"hard" },
+  { name:"High Knees", cat:"kardio", icon:"🏃", muscle:"Kaki, Kardio", level:"easy" },
+  { name:"Jumping Jacks", cat:"kardio", icon:"⭐", muscle:"Full Body", level:"easy" },
+  { name:"Box Jump", cat:"kardio", icon:"📦", muscle:"Paha, Betis, Kardio", level:"hard" },
+  { name:"Wall Sit", cat:"isometrik", icon:"🧱", muscle:"Paha, Betis", level:"easy" },
+  { name:"Dead Hang", cat:"isometrik", icon:"🪝", muscle:"Punggung, Grip", level:"medium" },
+  { name:"L-Sit Hold", cat:"isometrik", icon:"🔷", muscle:"Core, Trisep", level:"hard" },
+  { name:"Hollow Body Hold", cat:"isometrik", icon:"🌙", muscle:"Core seluruh", level:"medium" },
+];
+
+const schedule = [
+  { hari:"Senin",   pagi:"Push Up + Body Squat", sore:"Sit Up + Plank",     fokus:"Full Body",   tag:"morning" },
+  { hari:"Selasa",  pagi:"Lunges + Wall Sit",    sore:"Push Up + Crunches", fokus:"Tubuh Bawah", tag:"morning" },
+  { hari:"Rabu",    pagi:"Istirahat Aktif",       sore:"Jalan / Jogging 20 menit", fokus:"Pemulihan", tag:"rest" },
+  { hari:"Kamis",   pagi:"Sit Up + Plank",        sore:"Body Squat + Lunges",fokus:"Core & Kaki", tag:"morning" },
+  { hari:"Jumat",   pagi:"Push Up + Wall Sit",    sore:"Mountain Climber",   fokus:"Kardio + Kekuatan", tag:"cardio" },
+  { hari:"Sabtu",   pagi:"Full Program",          sore:"Stretching 15 menit",fokus:"Full Sesi",   tag:"morning" },
+  { hari:"Minggu",  pagi:"Istirahat Total",       sore:"Yoga / Meditasi",    fokus:"Recovery",    tag:"rest" },
+];
+
+// ── STATE ──
+let trackerState = { pagi: new Array(6).fill(false), sore: new Array(6).fill(false) };
+let currentSession = 'pagi';
+let swInterval = null, swRunning = false, swTime = 0;
+let itInterval = null, itRunning = false, itPhase = 'work', itTime = 40, itRounds = 0;
+
+// ── TRACKER ──
+function renderTracker() {
+  const rows = document.getElementById('exRows');
+  const done = trackerState[currentSession];
+  rows.innerHTML = exercises.map((ex, i) => {
+    const pct = done[i] ? 100 : (i < (done.filter(Boolean).length + 1) ? 0 : 0);
+    return `
+    <div class="ex-row ${done[i] ? 'done' : ''}" id="row-${i}">
+      <div>
+        <div class="ex-name-row">${ex.name}</div>
+        <div style="font-size:12px;color:var(--c-dim)">${ex.muscle}</div>
+      </div>
+      <div class="ex-target">${ex.target}</div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" style="width:${done[i] ? 100 : 0}%"></div>
+      </div>
+      <button class="check-btn" onclick="toggleEx(${i})">${done[i] ? '✓' : '○'}</button>
+    </div>`;
+  }).join('');
+  const cnt = done.filter(Boolean).length;
+  document.getElementById('totalScore').innerHTML = `${cnt} <span>/ 6 selesai</span>`;
+}
+
+function toggleEx(i) {
+  trackerState[currentSession][i] = !trackerState[currentSession][i];
+  renderTracker();
+  if (trackerState[currentSession][i]) showToast('✓ Gerakan selesai!');
+  if (trackerState[currentSession].every(Boolean)) showToast('🎉 Sesi ' + currentSession + ' selesai semua!');
+}
+function switchSession(s, btn) {
+  currentSession = s;
+  document.querySelectorAll('.sess-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTracker();
+}
+function resetTracker() { trackerState[currentSession] = new Array(6).fill(false); renderTracker(); showToast('Tracker direset'); }
+
+// ── LIBRARY ──
+function renderLib(cat = 'all') {
+  const grid = document.getElementById('libGrid');
+  const items = cat === 'all' ? library : library.filter(l => l.cat === cat);
+  const lvlMap = { easy: ['Pemula','badge-easy'], medium: ['Menengah','badge-medium'], hard: ['Lanjut','badge-hard'] };
+  grid.innerHTML = items.map(ex => {
+    const [lvl, cls] = lvlMap[ex.level];
+    return `<div class="lib-card">
+      <div class="lib-img">${ex.icon}</div>
+      <div class="lib-body">
+        <div class="lib-name">${ex.name}</div>
+        <div class="lib-meta">${ex.muscle}</div>
+        <span class="lib-badge ${cls}">${lvl}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+function filterLib(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLib(cat);
+}
+
+// ── SCHEDULE ──
+function renderSchedule() {
+  const body = document.getElementById('schedBody');
+  const days = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'];
+  const today = days[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1];
+  body.innerHTML = schedule.map(s => `
+    <tr ${s.hari === today ? 'style="background:rgba(59,130,246,0.06)"' : ''}>
+      <td style="font-weight:600;${s.hari === today ? 'color:var(--c-primary)' : ''}">${s.hari === today ? '▶ ' : ''}${s.hari}</td>
+      <td>${s.pagi}</td>
+      <td>${s.sore}</td>
+      <td>${s.fokus}</td>
+      <td><span class="sched-tag ${s.tag}">${s.tag === 'morning' ? 'Aktif' : s.tag === 'rest' ? 'Istirahat' : 'Kardio'}</span></td>
+    </tr>`).join('');
+}
+
+// ── CHART ──
+const chartDataThis = [2, 1, 2, 0, 2, 1, 0];
+const chartDataLast = [1, 2, 2, 2, 1, 2, 1];
+const dayLabels = ['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
+
+function updateChart(week) {
+  const data = week === 'this' ? chartDataThis : chartDataLast;
+  const max = Math.max(...data);
+  const chart = document.getElementById('barChart');
+  chart.innerHTML = data.map((v, i) => `
+    <div class="bar-wrap">
+      <div class="bar-val">${v}</div>
+      <div class="bar" style="height:${max > 0 ? (v/max*100) : 0}%" title="${v} sesi"></div>
+      <div class="bar-day">${dayLabels[i]}</div>
+    </div>`).join('');
+  document.getElementById('totalWeek').textContent = `Total: ${data.reduce((a,b)=>a+b,0)} sesi`;
+}
+
+// ── BMI ──
+function calcBMI() {
+  const w = parseFloat(document.getElementById('bmi-weight').value);
+  const h = parseFloat(document.getElementById('bmi-height').value) / 100;
+  if (!w || !h) return;
+  const bmi = (w / (h * h)).toFixed(1);
+  let cat, color, msg, pct;
+  if (bmi < 18.5) { cat='Kurus'; color='#3b82f6'; msg='Tingkatkan asupan kalori dan latihan kekuatan.'; pct=15; }
+  else if (bmi < 25) { cat='Normal'; color='#22c55e'; msg='Pertahankan dengan latihan rutin dan pola makan seimbang.'; pct=40; }
+  else if (bmi < 30) { cat='Kelebihan Berat'; color='#f97316'; msg='Fokus pada latihan kardio dan defisit kalori.'; pct=65; }
+  else { cat='Obesitas'; color='#ef4444'; msg='Konsultasikan dengan dokter sebelum memulai program intens.'; pct=88; }
+  document.getElementById('bmiResult').innerHTML = `
+    <div class="bmi-number" style="color:${color}">${bmi}</div>
+    <div class="bmi-cat" style="color:${color}">${cat}</div>
+    <div class="bmi-meter"><div class="bmi-pointer" style="left:${pct}%"></div></div>
+    <div class="bmi-msg">${msg}</div>`;
+}
+
+// ── STOPWATCH ──
+function toggleSW() {
+  const btn = document.getElementById('sw-btn');
+  if (!swRunning) { swRunning = true; btn.textContent = 'Pause'; swInterval = setInterval(() => { swTime++; updateSWDisplay(); }, 1000); }
+  else { swRunning = false; btn.textContent = 'Lanjut'; clearInterval(swInterval); }
+}
+function resetSW() { clearInterval(swInterval); swRunning = false; swTime = 0; document.getElementById('sw-btn').textContent = 'Mulai'; updateSWDisplay(); }
+function updateSWDisplay() {
+  const m = String(Math.floor(swTime/60)).padStart(2,'0');
+  const s = String(swTime%60).padStart(2,'0');
+  const el = document.getElementById('sw-display');
+  el.textContent = `${m}:${s}`;
+  el.className = 'timer-display ' + (swRunning ? 'running' : '');
+}
+
+// ── INTERVAL TIMER ──
+function resetIT() { clearInterval(itInterval); itRunning = false; itPhase = 'work'; itRounds = 0; itTime = parseInt(document.getElementById('work-sec').value)||40; document.getElementById('it-btn').textContent = 'Mulai'; updateITDisplay(); }
+function toggleIT() {
+  const btn = document.getElementById('it-btn');
+  if (!itRunning) { itRunning = true; btn.textContent = 'Pause'; itTime = itTime || parseInt(document.getElementById('work-sec').value); itInterval = setInterval(tickIT, 1000); }
+  else { itRunning = false; btn.textContent = 'Lanjut'; clearInterval(itInterval); }
+}
+function tickIT() {
+  itTime--;
+  if (itTime <= 0) {
+    if (itPhase === 'work') { itPhase = 'rest'; itTime = parseInt(document.getElementById('rest-sec').value)||20; showToast('💤 Istirahat!'); }
+    else { itPhase = 'work'; itRounds++; itTime = parseInt(document.getElementById('work-sec').value)||40; showToast('💪 Mulai Kerja!'); }
+  }
+  updateITDisplay();
+}
+function updateITDisplay() {
+  const m = String(Math.floor(itTime/60)).padStart(2,'0');
+  const s = String(itTime%60).padStart(2,'0');
+  const el = document.getElementById('it-display');
+  el.textContent = `${m}:${s}`;
+  el.className = 'timer-display ' + (itRunning ? (itPhase==='work' ? 'running' : 'rest') : '');
+  document.getElementById('it-phase').textContent = `Fase: ${itPhase==='work'?'💪 Kerja':'💤 Istirahat'}`;
+  document.getElementById('it-rounds').textContent = `Putaran selesai: ${itRounds}`;
+}
+
+// ── MODAL ──
+function openModal() { document.getElementById('modal').classList.add('open'); }
+function closeModal(e) { if (e.target === document.getElementById('modal')) document.getElementById('modal').classList.remove('open'); }
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── NAV ──
+function toggleMenu() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+
+// ── COUNTERS ──
+function countUp(id, end, dur=1200) {
+  const el = document.getElementById(id); let start = 0;
+  const step = dur / end;
+  const timer = setInterval(() => {
+    start += Math.ceil(end/60);
+    if (start >= end) { el.textContent = end.toLocaleString()+(end>=1000?'+':''); clearInterval(timer); }
+    else el.textContent = start.toLocaleString();
+  }, step);
+}
+
+// ── SCROLL ANIMATIONS ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// ── INIT ──
+document.getElementById('today-date').textContent = new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+renderTracker();
+renderLib();
+renderSchedule();
+updateChart('this');
+updateITDisplay();
+countUp('cnt-users', 12400);
+countUp('cnt-ex', 52);
+countUp('cnt-prog', 18);
+</script>
+</body>
+</html>
