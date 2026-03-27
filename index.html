@@ -881,10 +881,12 @@
   <p class="sec-sub fade-up">Dengarkan musik favoritmu lewat YouTube tanpa berhenti saat berpindah halaman.</p>
   <div class="musik-layout fade-up">
     <!-- PLAYER CARD -->
-    <div class="musik-player-card">
+<div class="musik-player-card">
       <div class="musik-cover-wrap" id="musikCoverWrap">
-        <span class="musik-cover-fallback" id="musikCoverFallback">🎵</span>
-        <img class="musik-cover-img" id="musikCoverImg" src="" alt="" style="display:none" onerror="this.style.display='none';document.getElementById('musikCoverFallback').style.display='block'">
+        <div class="musik-cover-inner">
+          <span class="musik-cover-fallback" id="musikCoverFallback">🎵</span>
+          <img class="musik-cover-img" id="musikCoverImg" src="" alt="" style="display:none">
+        </div>
       </div>
       <div class="musik-now-title" id="musikNowTitle">Pilih lagu untuk diputar</div>
       <div class="musik-now-artist" id="musikNowArtist">—</div>
