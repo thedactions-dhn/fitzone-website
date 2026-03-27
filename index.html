@@ -371,13 +371,14 @@
   .host-card.recommended .host-btn { background: var(--c-primary); border-color: var(--c-primary); color: white; }
   .host-card.recommended .host-btn:hover { background: #2563eb; }
 
-  /* ── MUSIK (INSTAGRAM STYLE) ── */
+/* ── MUSIK (INSTAGRAM STYLE) ── */
   #musik { background: var(--c-surface); }
   .musik-layout {
     display: grid; grid-template-columns: 320px 1fr; gap: 24px;
     max-width: 1100px; align-items: start;
   }
   
+  /* Player Card - IG Style */
   .musik-player-card {
     background: var(--c-bg);
     border: 1px solid var(--c-border);
@@ -388,20 +389,22 @@
     box-shadow: 0 10px 40px rgba(0,0,0,0.2);
   }
   
+  /* IG Story Gradient Ring for Cover */
   .musik-cover-wrap {
     position: relative;
     width: 180px; height: 180px;
     border-radius: 50%;
     margin-bottom: 24px;
-    padding: 4px;
+    padding: 4px; /* Space for the gradient ring */
     background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
     display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 24px rgba(220, 39, 67, 0.2);
   }
   .musik-cover-inner {
     width: 100%; height: 100%;
     border-radius: 50%;
     background: var(--c-card);
-    border: 3px solid var(--c-bg);
+    border: 3px solid var(--c-bg); /* Inner border to separate gradient */
     display: flex; align-items: center; justify-content: center;
     overflow: hidden;
   }
@@ -416,21 +419,24 @@
     font-size: 14px; color: var(--c-muted); margin-bottom: 24px; text-align: center;
   }
 
+  /* Progress / Waveform bar */
   .musik-progress-wrap { width: 100%; margin-bottom: 20px; cursor: pointer; }
   .musik-waveform {
-    display: flex; align-items: center; gap: 3px; height: 40px; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 3px; height: 40px; margin-bottom: 8px; cursor: pointer;
   }
   .musik-waveform-bar {
     flex: 1; border-radius: 4px; background: rgba(255,255,255,0.08);
-    transition: background 0.2s; min-height: 4px;
+    transition: background 0.2s, height 0.1s; min-height: 4px;
   }
   .musik-waveform-bar.played { background: linear-gradient(to top, #f09433, #dc2743); }
+  .musik-waveform-bar.playing-bar { animation: waveAnim 0.6s ease-in-out infinite alternate; }
   
   .musik-time-row {
     display: flex; justify-content: space-between;
     font-family: var(--font-mono); font-size: 12px; color: var(--c-dim);
   }
 
+  /* Controls - Minimalist */
   .musik-controls {
     display: flex; align-items: center; justify-content: center; gap: 20px;
     width: 100%; margin-bottom: 24px;
@@ -439,134 +445,479 @@
     background: none; border: none; color: var(--c-text);
     cursor: pointer; font-size: 20px; transition: transform 0.2s;
   }
+  .musik-ctrl-btn:hover { transform: scale(1.1); color: #dc2743; }
+  .musik-ctrl-btn.active { color: #bc1888; }
+  
   .musik-play-btn {
     width: 64px; height: 64px; border-radius: 50%;
     background: var(--c-text); color: var(--c-bg);
     border: none; font-size: 24px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; padding-left: 4px; /* visually center the play icon */
   }
+  .musik-play-btn.playing { padding-left: 0; } /* reset padding for pause icon */
+  .musik-play-btn:hover { transform: scale(1.05); }
 
+  /* Volume Slider (Balok Nada) */
   .musik-volume-row {
     display: flex; align-items: center; gap: 12px; width: 100%;
     background: var(--c-card); padding: 12px 16px; border-radius: 12px;
   }
-  .musik-vol-slider { flex: 1; cursor: pointer; }
+  .musik-vol-icon { font-size: 16px; color: var(--c-muted); }
+  .musik-vol-slider {
+    -webkit-appearance: none; appearance: none;
+    flex: 1; height: 6px; border-radius: 3px;
+    background: rgba(255,255,255,0.1); outline: none;
+  }
+  .musik-vol-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #fff; cursor: pointer;
+  }
+  .musik-vol-num { font-family: var(--font-mono); font-size: 12px; color: var(--c-muted); min-width: 24px; }
 
+  /* Playlist View */
   .musik-playlist-wrap {
     background: var(--c-card); border: 1px solid var(--c-border);
     border-radius: 24px; overflow: hidden;
   }
   .musik-playlist-header {
-    padding: 24px; border-bottom: 1px solid var(--c-border);
+    padding: 24px; display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--c-border);
   }
-  .musik-list { max-height: 580px; overflow-y: auto; }
+  .musik-playlist-title { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .musik-list { max-height: 580px; overflow-y: auto; padding: 12px 0; }
+  .musik-list::-webkit-scrollbar { width: 6px; }
+  .musik-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+  
   .musik-item {
     display: flex; align-items: center; gap: 16px; padding: 12px 24px;
     cursor: pointer; transition: background 0.2s;
   }
+  .musik-item:hover { background: rgba(255,255,255,0.02); }
   .musik-item.active { background: rgba(255,255,255,0.05); }
+  
   .musik-item-cover {
     width: 48px; height: 48px; border-radius: 50%;
+    background: linear-gradient(135deg, #2a2a35, #16161f);
     display: flex; align-items: center; justify-content: center;
+    font-size: 20px; position: relative;
   }
+  .musik-item.active .musik-item-cover::after {
+    content: ''; position: absolute; inset: -3px;
+    border-radius: 50%; padding: 2px;
+    background: linear-gradient(45deg, #f09433, #dc2743, #bc1888);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+  }
+  .musik-item-title { font-size: 14px; font-weight: 600; color: var(--c-text); }
+  .musik-item.active .musik-item-title { background: linear-gradient(45deg, #f09433, #bc1888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .musik-item-artist { font-size: 12px; color: var(--c-muted); margin-top: 4px; }
 
-  /* Footer */
+  /* ── FOOTER ── */
   footer {
-    padding: 40px 5vw; border-top: 1px solid var(--c-border);
-    display: flex; justify-content: space-between; align-items: center;
+    padding: 40px 5vw 30px;
+    border-top: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
   }
+  .footer-logo { font-family: var(--font-head); font-size: 24px; letter-spacing: 2px; }
+  .footer-logo span { color: var(--c-primary); }
+  .footer-copy { font-size: 13px; color: var(--c-dim); }
 
-  /* Modal & Toast */
+  /* ── MODAL ── */
   .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-    display: none; align-items: center; justify-content: center; z-index: 1000;
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px; opacity: 0; pointer-events: none; transition: opacity .25s;
   }
-  .modal-overlay.open { display: flex; }
-  .modal { background: var(--c-card); padding: 32px; border-radius: 18px; max-width: 400px; width: 90%; }
-  
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--c-card); border: 1px solid var(--c-border2);
+    border-radius: 18px; padding: 32px; max-width: 480px; width: 100%;
+    transform: translateY(20px); transition: transform .25s;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .modal-sub   { font-size: 14px; color: var(--c-muted); margin-bottom: 24px; line-height: 1.6; }
+  .modal-close { float: right; background: none; border: none; color: var(--c-muted); font-size: 22px; cursor: pointer; margin-top: -4px; }
+
+  /* ── TOAST ── */
   .toast {
-    position: fixed; bottom: 20px; right: 20px; background: var(--c-card);
-    padding: 12px 24px; border-radius: 8px; border: 1px solid var(--c-primary);
-    transform: translateY(100px); transition: 0.3s; opacity: 0; z-index: 2000;
+    position: fixed; bottom: 24px; right: 24px; z-index: 300;
+    background: var(--c-card); border: 1px solid var(--c-border2);
+    padding: 12px 20px; border-radius: 10px; font-size: 14px;
+    transform: translateY(80px); opacity: 0; transition: all .3s;
+    pointer-events: none;
   }
   .toast.show { transform: translateY(0); opacity: 1; }
 
+  /* ── SCROLL ANIM ── */
+  .fade-up { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
   @media(max-width: 768px) {
     .nav-links, .nav-cta { display: none; }
-    .musik-layout { grid-template-columns: 1fr; }
-    .hero-stats { gap: 10px; flex-wrap: wrap; }
+    .burger { display: flex; }
+    .nav-links.open { display: flex; flex-direction: column; position: fixed; top: 64px; left: 0; right: 0; background: var(--c-surface); padding: 20px 5vw; border-bottom: 1px solid var(--c-border); z-index: 99; }
+    .nav-cta.open { display: block; margin: 0 5vw 16px; }
+    .hero-stats { gap: 20px; }
+    .timer-wrap, .bmi-wrap { grid-template-columns: 1fr; }
+    .ex-row { grid-template-columns: 1fr 80px 90px 40px; gap: 8px; }
   }
-
-  @keyframes spin-slow { 100% { transform: rotate(360deg); } }
-  .musik-cover-inner.playing { animation: spin-slow 15s linear infinite; }
+  
+  /* ── ANIMASI TRANSISI MUSIK ── */
+  @keyframes pop-in {
+    0% { transform: scale(0.85); opacity: 0; }
+    60% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  @keyframes slide-up-fade {
+    0% { transform: translateY(12px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+  
+  .animate-cover {
+    animation: pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+  .animate-text {
+    animation: slide-up-fade 0.4s ease-out forwards;
+  }
+  
+  /* Efek putar pelan saat lagu menyala (opsional, ala piringan hitam) */
+  .musik-cover-inner.playing {
+    animation: spin-slow 15s linear infinite;
+  }
+  @keyframes spin-slow {
+    100% { transform: rotate(360deg); }
+  }
 </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
   <a href="#" class="nav-logo">FIT<span>ZONE</span></a>
-  <ul class="nav-links">
+  <ul class="nav-links" id="navLinks">
     <li><a href="#tracker">Tracker</a></li>
     <li><a href="#fitur">Fitur</a></li>
     <li><a href="#library">Library</a></li>
     <li><a href="#timer">Timer</a></li>
+    <li><a href="#panduan">Panduan</a></li>
+    <li><a href="#hosting">Hosting</a></li>
     <li><a href="#musik">Musik</a></li>
   </ul>
   <button class="nav-cta" onclick="openModal()">Mulai Gratis</button>
+  <div class="burger" id="burger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
 </nav>
 
+<!-- HERO -->
 <section id="hero">
   <div class="hero-grid"></div>
   <div class="hero-glow"></div>
   <div class="hero-inner">
     <div class="hero-tag">Platform Olahraga #1 Indonesia</div>
     <h1>LATIHAN<br><span class="accent">LEBIH</span><br><span class="blue">CERDAS</span></h1>
-    <p class="hero-desc">Lacak latihan, hitung BMI, dan dengarkan playlist favorit di satu tempat.</p>
+    <p class="hero-desc">
+      Track program latihan, hitung BMI, gunakan timer interval, dan akses 50+ gerakan olahraga — semuanya gratis, semua di satu tempat.
+    </p>
     <div class="hero-btns">
       <a href="#tracker" class="btn-primary">Mulai Sekarang</a>
-      <a href="#musik" class="btn-ghost">Dengar Musik</a>
+      <a href="#panduan" class="btn-ghost">Panduan Penggunaan</a>
     </div>
     <div class="hero-stats">
-      <div><div class="h-stat-num">12K+</div><div class="h-stat-lbl">Pengguna Aktif</div></div>
-      <div><div class="h-stat-num">50+</div><div class="h-stat-lbl">Gerakan</div></div>
-      <div><div class="h-stat-num">100%</div><div class="h-stat-lbl">Gratis</div></div>
+      <div><div class="h-stat-num" id="cnt-users">0</div><div class="h-stat-lbl">Pengguna Aktif</div></div>
+      <div><div class="h-stat-num" id="cnt-ex">0</div><div class="h-stat-lbl">Gerakan Tersedia</div></div>
+      <div><div class="h-stat-num" id="cnt-prog">0</div><div class="h-stat-lbl">Program Latihan</div></div>
     </div>
   </div>
 </section>
 
-<!-- TRACKER SECTION -->
+<!-- TRACKER -->
 <section id="tracker">
-  <div class="sec-label">Program Harian</div>
-  <div class="sec-title">Workout Tracker</div>
-  <div class="tracker-wrap">
+  <div class="sec-label fade-up">Program Harian</div>
+  <div class="sec-title fade-up">Workout Tracker</div>
+  <p class="sec-sub fade-up">Centang setiap gerakan setelah selesai. Progress tersimpan otomatis.</p>
+  <div class="tracker-wrap fade-up">
     <div class="tracker-header">
-      <span class="tracker-title">Sesi Hari Ini</span>
+      <span class="tracker-title">Sesi Latihan</span>
       <span class="tracker-day" id="today-date"></span>
     </div>
-    <div class="ex-rows" id="exRows">
-      <!-- Generated by JS -->
+    <div class="session-tabs">
+      <button class="sess-tab active" onclick="switchSession('pagi', this)">🌅 Pagi</button>
+      <button class="sess-tab" onclick="switchSession('sore', this)">🌆 Sore</button>
     </div>
+    <div class="ex-rows" id="exRows"></div>
     <div class="tracker-footer">
-      <div class="total-score" id="totalScore">0 <span>/ 6 selesai</span></div>
+      <div>
+        <div class="total-score" id="totalScore">0 <span>/ 6 selesai</span></div>
+      </div>
       <button class="reset-btn" onclick="resetTracker()">Reset Sesi</button>
     </div>
   </div>
 </section>
 
-<!-- MUSIK SECTION -->
+<!-- FITUR -->
+<section id="fitur">
+  <div class="sec-label fade-up">Semua Yang Anda Butuhkan</div>
+  <div class="sec-title fade-up">Fitur Lengkap</div>
+  <p class="sec-sub fade-up">Dirancang khusus untuk mendukung perjalanan kebugaran Anda dari awal hingga mahir.</p>
+  <div class="features-grid">
+    <div class="feat-card fade-up">
+      <div class="feat-icon blue">📋</div>
+      <div class="feat-title">Program Builder</div>
+      <div class="feat-desc">Buat & simpan program latihan personal sesuai tujuan: fat loss, muscle gain, atau stamina.</div>
+    </div>
+    <div class="feat-card fade-up">
+      <div class="feat-icon orange">⏱</div>
+      <div class="feat-title">Interval Timer</div>
+      <div class="feat-desc">Timer HIIT & Tabata dengan bunyi notifikasi. Set work/rest sesuai kebutuhan Anda.</div>
+    </div>
+    <div class="feat-card fade-up">
+      <div class="feat-icon green">📊</div>
+      <div class="feat-title">Progress Analytics</div>
+      <div class="feat-desc">Grafik mingguan menampilkan konsistensi latihan, kalori estimasi, dan streak hari berturut-turut.</div>
+    </div>
+    <div class="feat-card fade-up">
+      <div class="feat-icon purple">🧮</div>
+      <div class="feat-title">Kalkulator BMI & TDEE</div>
+      <div class="feat-desc">Hitung Body Mass Index dan kebutuhan kalori harian berdasarkan usia, berat, dan aktivitas.</div>
+    </div>
+    <div class="feat-card fade-up">
+      <div class="feat-icon pink">🎯</div>
+      <div class="feat-title">Goal Tracker</div>
+      <div class="feat-desc">Tetapkan target mingguan dan dapatkan reminder otomatis agar tetap di jalur yang benar.</div>
+    </div>
+    <div class="feat-card fade-up">
+      <div class="feat-icon cyan">📚</div>
+      <div class="feat-title">Exercise Library</div>
+      <div class="feat-desc">50+ gerakan dengan panduan teknik, otot yang dilatih, dan variasi untuk semua level.</div>
+    </div>
+  </div>
+</section>
+
+<!-- EXERCISE LIBRARY -->
+<section id="library">
+  <div class="sec-label fade-up">Panduan Gerakan</div>
+  <div class="sec-title fade-up">Exercise Library</div>
+  <p class="sec-sub fade-up">Temukan gerakan yang tepat untuk setiap bagian tubuh.</p>
+  <div class="lib-filters fade-up">
+    <button class="filter-btn active" onclick="filterLib('all', this)">Semua</button>
+    <button class="filter-btn" onclick="filterLib('tubuh-atas', this)">Tubuh Atas</button>
+    <button class="filter-btn" onclick="filterLib('tubuh-bawah', this)">Tubuh Bawah</button>
+    <button class="filter-btn" onclick="filterLib('core', this)">Core / Perut</button>
+    <button class="filter-btn" onclick="filterLib('kardio', this)">Kardio</button>
+    <button class="filter-btn" onclick="filterLib('isometrik', this)">Isometrik</button>
+  </div>
+  <div class="lib-grid" id="libGrid"></div>
+</section>
+
+<!-- TIMER -->
+<section id="timer">
+  <div class="sec-label fade-up">Tools Latihan</div>
+  <div class="sec-title fade-up">Workout Timer</div>
+  <p class="sec-sub fade-up">Stopwatch dan timer interval untuk sesi latihan yang lebih terstruktur.</p>
+  <div class="timer-wrap fade-up">
+    <div class="timer-card">
+      <h3>Stopwatch</h3>
+      <div class="timer-display" id="sw-display">00:00</div>
+      <div class="timer-controls">
+        <button class="timer-btn start" id="sw-btn" onclick="toggleSW()">Mulai</button>
+        <button class="timer-btn reset2" onclick="resetSW()">Reset</button>
+      </div>
+    </div>
+    <div class="timer-card">
+      <h3>Interval Timer (HIIT)</h3>
+      <div class="timer-setting">
+        <label>Kerja (dtk)</label>
+        <input type="number" id="work-sec" value="40" min="5" max="120">
+        <label>Istirahat (dtk)</label>
+        <input type="number" id="rest-sec" value="20" min="5" max="60">
+      </div>
+      <div class="timer-display" id="it-display">00:40</div>
+      <div style="font-size:13px;color:var(--c-muted);margin-bottom:10px;" id="it-phase">Fase: Kerja</div>
+      <div class="timer-controls">
+        <button class="timer-btn start" id="it-btn" onclick="toggleIT()">Mulai</button>
+        <button class="timer-btn reset2" onclick="resetIT()">Reset</button>
+      </div>
+      <div class="interval-info" id="it-rounds">Putaran: 0</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRESS -->
+<section id="progress">
+  <div class="sec-label fade-up">Lacak Kemajuan</div>
+  <div class="sec-title fade-up">Progress Mingguan</div>
+  <p class="sec-sub fade-up">Visualisasi konsistensi latihan Anda dalam 7 hari terakhir.</p>
+  <div class="chart-area fade-up">
+    <div class="chart-hdr">
+      <span class="chart-title">Sesi Selesai per Hari</span>
+      <select class="week-select" onchange="updateChart(this.value)">
+        <option value="this">Minggu Ini</option>
+        <option value="last">Minggu Lalu</option>
+      </select>
+    </div>
+    <div class="bar-chart" id="barChart"></div>
+    <div class="chart-legend">
+      <div class="leg-item"><div class="leg-dot" style="background:linear-gradient(var(--c-primary),#8b5cf6)"></div> Sesi Latihan</div>
+      <div class="leg-item" style="margin-left:auto; font-family:var(--font-mono); font-size:12px;" id="totalWeek"></div>
+    </div>
+  </div>
+</section>
+
+<!-- BMI -->
+<section id="bmi" style="background:var(--c-surface)">
+  <div class="sec-label fade-up">Kesehatan</div>
+  <div class="sec-title fade-up">Kalkulator BMI</div>
+  <p class="sec-sub fade-up">Masukkan data Anda untuk mengetahui indeks massa tubuh dan rekomendasi latihan.</p>
+  <div class="bmi-wrap fade-up">
+    <div class="bmi-form">
+      <h3>Data Anda</h3>
+      <div class="form-group"><label>Berat Badan (kg)</label><input type="number" id="bmi-weight" placeholder="70" oninput="calcBMI()"></div>
+      <div class="form-group"><label>Tinggi Badan (cm)</label><input type="number" id="bmi-height" placeholder="170" oninput="calcBMI()"></div>
+      <div class="form-group"><label>Usia</label><input type="number" id="bmi-age" placeholder="25" oninput="calcBMI()"></div>
+    </div>
+    <div class="bmi-result" id="bmiResult">
+      <div style="font-size:14px;color:var(--c-muted)">Masukkan data<br>untuk melihat hasil</div>
+    </div>
+  </div>
+</section>
+
+<!-- JADWAL -->
+<section id="jadwal">
+  <div class="sec-label fade-up">Rencana Latihan</div>
+  <div class="sec-title fade-up">Jadwal Mingguan</div>
+  <p class="sec-sub fade-up">Template jadwal yang bisa disesuaikan dengan program Anda.</p>
+  <div class="fade-up" style="overflow-x:auto;">
+  <table class="schedule-table">
+    <thead>
+      <tr><th>Hari</th><th>Sesi Pagi</th><th>Sesi Sore</th><th>Fokus</th><th>Status</th></tr>
+    </thead>
+    <tbody id="schedBody"></tbody>
+  </table>
+  </div>
+</section>
+
+<!-- PANDUAN -->
+<section id="panduan">
+  <div class="sec-label fade-up">Cara Menggunakan</div>
+  <div class="sec-title fade-up">Panduan Akses Mudah</div>
+  <p class="sec-sub fade-up">Ikuti 6 langkah ini untuk memulai perjalanan kebugaran Anda hari ini.</p>
+  <div class="steps-wrap">
+    <div class="step-card fade-up">
+      <div class="step-num">Langkah 01</div>
+      <div class="step-title">Buka Website</div>
+      <div class="step-desc">Akses FitZone dari browser HP atau laptop. Tidak perlu install — langsung buka dan gunakan.</div>
+    </div>
+    <div class="step-card fade-up">
+      <div class="step-num">Langkah 02</div>
+      <div class="step-title">Pilih Program</div>
+      <div class="step-desc">Pilih program latihan sesuai tujuan: Pemula, Menengah, atau Lanjut. Bisa juga buat program sendiri.</div>
+    </div>
+    <div class="step-card fade-up">
+      <div class="step-num">Langkah 03</div>
+      <div class="step-title">Gunakan Tracker</div>
+      <div class="step-desc">Buka bagian Workout Tracker, pilih sesi Pagi atau Sore, lalu centang setiap gerakan yang selesai.</div>
+    </div>
+    <div class="step-card fade-up">
+      <div class="step-num">Langkah 04</div>
+      <div class="step-title">Aktifkan Timer</div>
+      <div class="step-desc">Gunakan Stopwatch atau Interval Timer HIIT untuk mengontrol waktu latihan dan istirahat.</div>
+    </div>
+    <div class="step-card fade-up">
+      <div class="step-num">Langkah 05</div>
+      <div class="step-title">Cek Progres</div>
+      <div class="step-desc">Pantau konsistensi latihan mingguan di bagian Progress. Streak membantu Anda tetap termotivasi.</div>
+    </div>
+    <div class="step-card fade-up">
+      <div class="step-num">Langkah 06</div>
+      <div class="step-title">Hitung BMI</div>
+      <div class="step-desc">Masukkan berat dan tinggi badan di kalkulator BMI untuk mendapatkan rekomendasi program yang sesuai.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOSTING -->
+<section id="hosting">
+  <div class="sec-label fade-up">Deploy Website</div>
+  <div class="sec-title fade-up">Rekomendasi Hosting Gratis</div>
+  <p class="sec-sub fade-up">Platform-platform ini digunakan oleh jutaan developer profesional di seluruh dunia — semua gratis.</p>
+  <div class="hosting-grid">
+    <div class="host-card recommended fade-up">
+      <span class="host-badge rec-badge">⭐ Paling Direkomendasikan</span>
+      <div class="host-name">Vercel</div>
+      <div class="host-tag">Digunakan oleh Next.js, startup Silicon Valley, dan ratusan ribu developer</div>
+      <ul class="host-features">
+        <li>Deploy dalam hitungan detik via drag &amp; drop</li>
+        <li>SSL otomatis + domain gratis (.vercel.app)</li>
+        <li>CDN global — cepat di Indonesia</li>
+        <li>Integrasi GitHub otomatis</li>
+        <li>100GB bandwidth/bulan gratis</li>
+        <li>Preview URL setiap push commit</li>
+      </ul>
+      <a href="https://vercel.com" class="host-btn" target="_blank">Buka Vercel →</a>
+    </div>
+    <div class="host-card fade-up">
+      <span class="host-badge pop-badge">🔥 Paling Populer</span>
+      <div class="host-name">Netlify</div>
+      <div class="host-tag">Platform favorit untuk static sites dan JAMstack — dipakai 3 juta+ developer</div>
+      <ul class="host-features">
+        <li>Drag &amp; drop folder HTML langsung deploy</li>
+        <li>SSL gratis + subdomain .netlify.app</li>
+        <li>Form handling bawaan</li>
+        <li>100GB bandwidth/bulan gratis</li>
+        <li>Continuous deployment dari Git</li>
+        <li>Split testing A/B gratis</li>
+      </ul>
+      <a href="https://netlify.com" class="host-btn" target="_blank">Buka Netlify →</a>
+    </div>
+    <div class="host-card fade-up">
+      <span class="host-badge" style="background:rgba(249,115,22,0.15);color:var(--c-accent)">🐙 Developer Friendly</span>
+      <div class="host-name">GitHub Pages</div>
+      <div class="host-tag">Hosting resmi dari GitHub — digunakan untuk dokumentasi dan portofolio developer global</div>
+      <ul class="host-features">
+        <li>Gratis sepenuhnya tanpa batas waktu</li>
+        <li>Domain username.github.io</li>
+        <li>Update otomatis dari repository</li>
+        <li>SSL gratis bawaan</li>
+        <li>Dipakai oleh Facebook, Google, Twitter</li>
+        <li>Unlimited bandwidth untuk static site</li>
+      </ul>
+      <a href="https://pages.github.com" class="host-btn" target="_blank">Buka GitHub Pages →</a>
+    </div>
+  </div>
+  <div style="margin-top:28px; padding:28px 32px; background:rgba(59,130,246,0.06); border:1px solid rgba(59,130,246,0.2); border-radius:12px; max-width:760px; text-align:center;">
+    <div style="font-size:36px; margin-bottom:12px;">💡</div>
+    <div style="font-size:18px; font-weight:700; margin-bottom:10px; color:var(--c-text);">Terima Kasih Telah Mengunjungi FitZone!</div>
+    <div style="font-size:14px; color:var(--c-muted); line-height:1.8;">
+      Semoga informasi dan fitur yang tersedia di sini bermanfaat untuk perjalanan kebugaran kamu. Tetap semangat, tetap aktif, dan jadikan hidup sehat sebagai gaya hidupmu! 💪
+    </div>
+  </div>
+</section>
+
+<!-- MUSIK -->
 <section id="musik">
-  <div class="sec-label">Playlist</div>
-  <div class="sec-title">Musik Olahraga</div>
-  <div class="musik-layout">
-    <div class="musik-player-card">
-      <div class="musik-cover-wrap">
-        <div class="musik-cover-inner" id="musikCoverInner">
+  <div class="sec-label fade-up">Playlist Favorit</div>
+  <div class="sec-title fade-up">Musik Saat Olahraga</div>
+  <p class="sec-sub fade-up">Dengarkan musik favoritmu lewat YouTube tanpa berhenti saat berpindah halaman.</p>
+  <div class="musik-layout fade-up">
+    <!-- PLAYER CARD -->
+<div class="musik-player-card">
+      <div class="musik-cover-wrap" id="musikCoverWrap">
+        <div class="musik-cover-inner">
           <span class="musik-cover-fallback" id="musikCoverFallback">🎵</span>
+          <img class="musik-cover-img" id="musikCoverImg" src="" alt="" style="display:none">
         </div>
       </div>
-      <div class="musik-now-title" id="musikNowTitle">Pilih lagu...</div>
+      <div class="musik-now-title" id="musikNowTitle">Pilih lagu untuk diputar</div>
       <div class="musik-now-artist" id="musikNowArtist">—</div>
 
+      <!-- Waveform Progress -->
       <div class="musik-progress-wrap">
         <div class="musik-waveform" id="musikWaveform"></div>
         <div class="musik-time-row">
@@ -575,68 +926,304 @@
         </div>
       </div>
 
+      <!-- Controls -->
       <div class="musik-controls">
-        <button class="musik-ctrl-btn" onclick="musikPrev()">⏮</button>
+        <button class="musik-ctrl-btn" id="musikShuffleBtn" title="Acak" onclick="toggleShuffle()">🔀</button>
+        <button class="musik-ctrl-btn" onclick="musikPrev()" title="Sebelumnya">⏮</button>
         <button class="musik-play-btn" id="musikPlayBtn" onclick="toggleMusik()">▶</button>
-        <button class="musik-ctrl-btn" onclick="musikNext()">⏭</button>
+        <button class="musik-ctrl-btn" onclick="musikNext()" title="Selanjutnya">⏭</button>
+        <button class="musik-ctrl-btn" id="musikRepeatBtn" title="Ulangi 1 lagu" onclick="toggleRepeat()">🔁</button>
       </div>
 
+      <!-- Volume -->
       <div class="musik-volume-row">
-        <span>🔊</span>
-        <input type="range" class="musik-vol-slider" min="0" max="100" value="70" oninput="setVolume(this.value)">
+        <span class="musik-vol-icon" id="musikVolIcon">🔊</span>
+        <input type="range" class="musik-vol-slider" id="musikVolSlider" min="0" max="100" value="70" oninput="setVolume(this.value)">
+        <span class="musik-vol-num" id="musikVolNum">70</span>
       </div>
     </div>
 
+    <!-- PLAYLIST -->
     <div class="musik-playlist-wrap">
       <div class="musik-playlist-header">
-        <span class="musik-playlist-title">🎶 Antrean Lagu</span>
+        <span class="musik-playlist-title">🎶 Playlist</span>
+        <span class="musik-playlist-count" id="musikPlaylistCount">0 lagu</span>
       </div>
-      <div class="musik-list" id="musikList">
-        <!-- Generated by JS -->
-      </div>
+      <div class="musik-list" id="musikList"></div>
     </div>
+  </div>
+
+  <!-- Hidden YouTube iframe -->
+  <div id="ytPlayerWrap" style="position:fixed;bottom:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;">
+    <div id="ytPlayer"></div>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
   <div class="footer-logo">FIT<span>ZONE</span></div>
-  <div class="footer-copy">© 2025 FitZone Indonesia</div>
+  <div class="footer-copy">© 2025 FitZone — Platform Olahraga Gratis untuk Indonesia</div>
 </footer>
 
 <!-- MODAL -->
 <div class="modal-overlay" id="modal" onclick="closeModal(event)">
   <div class="modal">
-    <h3>Selamat Datang!</h3>
-    <p>Gunakan semua fitur secara gratis tanpa daftar.</p>
-    <button class="btn-primary" style="width:100%; margin-top:15px;" onclick="closeModal(null)">Oke, Mengerti</button>
+    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
+    <div class="modal-title">Selamat Datang di FitZone!</div>
+    <div class="modal-sub">Website ini gratis sepenuhnya. Tidak ada akun yang diperlukan — langsung scroll ke bawah dan mulai gunakan Tracker, Timer, dan semua fitur lainnya!</div>
+    <button class="btn-primary" style="width:100%" onclick="document.getElementById('modal').classList.remove('open');document.getElementById('tracker').scrollIntoView({behavior:'smooth'})">Mulai Latihan →</button>
   </div>
 </div>
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- HIDDEN PLAYER -->
-<div id="ytPlayerWrap" style="position:fixed; top:0; left:0; width:1px; height:1px; opacity:0.01; z-index:-999; overflow:hidden; pointer-events:none;">
-    <div id="ytPlayer"></div>
-</div>
-
 <script>
-// --- DATA ---
+// ── DATA ──
+const exercises = [
+  { name: "Push Up", target: "50 rep × 3 set", sets: 3, reps: 50, type: "rep", muscle: "Dada, Bahu, Trisep" },
+  { name: "Body Squat", target: "50 rep", sets: 1, reps: 50, type: "rep", muscle: "Paha, Bokong" },
+  { name: "Lunges", target: "50 rep", sets: 1, reps: 50, type: "rep", muscle: "Paha depan & belakang" },
+  { name: "Sit Up", target: "50 rep", sets: 1, reps: 50, type: "rep", muscle: "Perut, Core" },
+  { name: "Wall Sit", target: "50 detik", sets: 1, reps: 50, type: "hold", muscle: "Paha, Betis" },
+  { name: "Plank", target: "50 detik", sets: 1, reps: 50, type: "hold", muscle: "Core, Punggung" },
+];
+
+const library = [
+  { name:"Push Up", cat:"tubuh-atas", icon:"💪", muscle:"Dada, Bahu", level:"easy" },
+  { name:"Pull Up", cat:"tubuh-atas", icon:"🏋️", muscle:"Punggung, Bisep", level:"hard" },
+  { name:"Dips", cat:"tubuh-atas", icon:"🤸", muscle:"Trisep, Dada", level:"medium" },
+  { name:"Pike Push Up", cat:"tubuh-atas", icon:"🔼", muscle:"Bahu, Trisep", level:"medium" },
+  { name:"Diamond Push Up", cat:"tubuh-atas", icon:"💎", muscle:"Trisep, Dada dalam", level:"medium" },
+  { name:"Body Squat", cat:"tubuh-bawah", icon:"🦵", muscle:"Paha, Bokong", level:"easy" },
+  { name:"Lunges", cat:"tubuh-bawah", icon:"👟", muscle:"Paha depan & belakang", level:"easy" },
+  { name:"Jump Squat", cat:"tubuh-bawah", icon:"⬆️", muscle:"Paha, Betis", level:"medium" },
+  { name:"Bulgarian Split Squat", cat:"tubuh-bawah", icon:"🔪", muscle:"Paha, Bokong", level:"hard" },
+  { name:"Calf Raise", cat:"tubuh-bawah", icon:"🧦", muscle:"Betis", level:"easy" },
+  { name:"Sit Up", cat:"core", icon:"🏃", muscle:"Perut atas", level:"easy" },
+  { name:"Plank", cat:"core", icon:"📏", muscle:"Core, Punggung", level:"easy" },
+  { name:"Crunches", cat:"core", icon:"🥐", muscle:"Perut atas", level:"easy" },
+  { name:"Leg Raise", cat:"core", icon:"🦿", muscle:"Perut bawah", level:"medium" },
+  { name:"Russian Twist", cat:"core", icon:"🌀", muscle:"Oblique", level:"medium" },
+  { name:"Mountain Climber", cat:"kardio", icon:"🏔️", muscle:"Full Body", level:"medium" },
+  { name:"Burpee", cat:"kardio", icon:"💥", muscle:"Full Body", level:"hard" },
+  { name:"High Knees", cat:"kardio", icon:"🏃", muscle:"Kaki, Kardio", level:"easy" },
+  { name:"Jumping Jacks", cat:"kardio", icon:"⭐", muscle:"Full Body", level:"easy" },
+  { name:"Box Jump", cat:"kardio", icon:"📦", muscle:"Paha, Betis, Kardio", level:"hard" },
+  { name:"Wall Sit", cat:"isometrik", icon:"🧱", muscle:"Paha, Betis", level:"easy" },
+  { name:"Dead Hang", cat:"isometrik", icon:"🪝", muscle:"Punggung, Grip", level:"medium" },
+  { name:"L-Sit Hold", cat:"isometrik", icon:"🔷", muscle:"Core, Trisep", level:"hard" },
+  { name:"Hollow Body Hold", cat:"isometrik", icon:"🌙", muscle:"Core seluruh", level:"medium" },
+];
+
+const schedule = [
+  { hari:"Senin",   pagi:"Push Up + Body Squat", sore:"Sit Up + Plank",     fokus:"Full Body",   tag:"morning" },
+  { hari:"Selasa",  pagi:"Lunges + Wall Sit",    sore:"Push Up + Crunches", fokus:"Tubuh Bawah", tag:"morning" },
+  { hari:"Rabu",    pagi:"Istirahat Aktif",       sore:"Jalan / Jogging 20 menit", fokus:"Pemulihan", tag:"rest" },
+  { hari:"Kamis",   pagi:"Sit Up + Plank",        sore:"Body Squat + Lunges",fokus:"Core & Kaki", tag:"morning" },
+  { hari:"Jumat",   pagi:"Push Up + Wall Sit",    sore:"Mountain Climber",   fokus:"Kardio + Kekuatan", tag:"cardio" },
+  { hari:"Sabtu",   pagi:"Full Program",          sore:"Stretching 15 menit",fokus:"Full Sesi",   tag:"morning" },
+  { hari:"Minggu",  pagi:"Istirahat Total",       sore:"Yoga / Meditasi",    fokus:"Recovery",    tag:"rest" },
+];
+
+// ── STATE ──
+let trackerState = { pagi: new Array(6).fill(false), sore: new Array(6).fill(false) };
+let currentSession = 'pagi';
+let swInterval = null, swRunning = false, swTime = 0;
+let itInterval = null, itRunning = false, itPhase = 'work', itTime = 40, itRounds = 0;
+
+// ── TRACKER ──
+function renderTracker() {
+  const rows = document.getElementById('exRows');
+  const done = trackerState[currentSession];
+  rows.innerHTML = exercises.map((ex, i) => {
+    const pct = done[i] ? 100 : (i < (done.filter(Boolean).length + 1) ? 0 : 0);
+    return `
+    <div class="ex-row ${done[i] ? 'done' : ''}" id="row-${i}">
+      <div>
+        <div class="ex-name-row">${ex.name}</div>
+        <div style="font-size:12px;color:var(--c-dim)">${ex.muscle}</div>
+      </div>
+      <div class="ex-target">${ex.target}</div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" style="width:${done[i] ? 100 : 0}%"></div>
+      </div>
+      <button class="check-btn" onclick="toggleEx(${i})">${done[i] ? '✓' : '○'}</button>
+    </div>`;
+  }).join('');
+  const cnt = done.filter(Boolean).length;
+  document.getElementById('totalScore').innerHTML = `${cnt} <span>/ 6 selesai</span>`;
+}
+
+function toggleEx(i) {
+  trackerState[currentSession][i] = !trackerState[currentSession][i];
+  renderTracker();
+  if (trackerState[currentSession][i]) showToast('✓ Gerakan selesai!');
+  if (trackerState[currentSession].every(Boolean)) showToast('🎉 Sesi ' + currentSession + ' selesai semua!');
+}
+function switchSession(s, btn) {
+  currentSession = s;
+  document.querySelectorAll('.sess-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTracker();
+}
+function resetTracker() { trackerState[currentSession] = new Array(6).fill(false); renderTracker(); showToast('Tracker direset'); }
+
+// ── LIBRARY ──
+function renderLib(cat = 'all') {
+  const grid = document.getElementById('libGrid');
+  const items = cat === 'all' ? library : library.filter(l => l.cat === cat);
+  const lvlMap = { easy: ['Pemula','badge-easy'], medium: ['Menengah','badge-medium'], hard: ['Lanjut','badge-hard'] };
+  grid.innerHTML = items.map(ex => {
+    const [lvl, cls] = lvlMap[ex.level];
+    return `<div class="lib-card">
+      <div class="lib-img">${ex.icon}</div>
+      <div class="lib-body">
+        <div class="lib-name">${ex.name}</div>
+        <div class="lib-meta">${ex.muscle}</div>
+        <span class="lib-badge ${cls}">${lvl}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+function filterLib(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLib(cat);
+}
+
+// ── SCHEDULE ──
+function renderSchedule() {
+  const body = document.getElementById('schedBody');
+  const days = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'];
+  const today = days[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1];
+  body.innerHTML = schedule.map(s => `
+    <tr ${s.hari === today ? 'style="background:rgba(59,130,246,0.06)"' : ''}>
+      <td style="font-weight:600;${s.hari === today ? 'color:var(--c-primary)' : ''}">${s.hari === today ? '▶ ' : ''}${s.hari}</td>
+      <td>${s.pagi}</td>
+      <td>${s.sore}</td>
+      <td>${s.fokus}</td>
+      <td><span class="sched-tag ${s.tag}">${s.tag === 'morning' ? 'Aktif' : s.tag === 'rest' ? 'Istirahat' : 'Kardio'}</span></td>
+    </tr>`).join('');
+}
+
+// ── CHART ──
+const chartDataThis = [2, 1, 2, 0, 2, 1, 0];
+const chartDataLast = [1, 2, 2, 2, 1, 2, 1];
+const dayLabels = ['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
+
+function updateChart(week) {
+  const data = week === 'this' ? chartDataThis : chartDataLast;
+  const max = Math.max(...data);
+  const chart = document.getElementById('barChart');
+  chart.innerHTML = data.map((v, i) => `
+    <div class="bar-wrap">
+      <div class="bar-val">${v}</div>
+      <div class="bar" style="height:${max > 0 ? (v/max*100) : 0}%" title="${v} sesi"></div>
+      <div class="bar-day">${dayLabels[i]}</div>
+    </div>`).join('');
+  document.getElementById('totalWeek').textContent = `Total: ${data.reduce((a,b)=>a+b,0)} sesi`;
+}
+
+// ── BMI ──
+function calcBMI() {
+  const w = parseFloat(document.getElementById('bmi-weight').value);
+  const h = parseFloat(document.getElementById('bmi-height').value) / 100;
+  if (!w || !h) return;
+  const bmi = (w / (h * h)).toFixed(1);
+  let cat, color, msg, pct;
+  if (bmi < 18.5) { cat='Kurus'; color='#3b82f6'; msg='Tingkatkan asupan kalori dan latihan kekuatan.'; pct=15; }
+  else if (bmi < 25) { cat='Normal'; color='#22c55e'; msg='Pertahankan dengan latihan rutin dan pola makan seimbang.'; pct=40; }
+  else if (bmi < 30) { cat='Kelebihan Berat'; color='#f97316'; msg='Fokus pada latihan kardio dan defisit kalori.'; pct=65; }
+  else { cat='Obesitas'; color='#ef4444'; msg='Konsultasikan dengan dokter sebelum memulai program intens.'; pct=88; }
+  document.getElementById('bmiResult').innerHTML = `
+    <div class="bmi-number" style="color:${color}">${bmi}</div>
+    <div class="bmi-cat" style="color:${color}">${cat}</div>
+    <div class="bmi-meter"><div class="bmi-pointer" style="left:${pct}%"></div></div>
+    <div class="bmi-msg">${msg}</div>`;
+}
+
+// ── STOPWATCH ──
+function toggleSW() {
+  const btn = document.getElementById('sw-btn');
+  if (!swRunning) { swRunning = true; btn.textContent = 'Pause'; swInterval = setInterval(() => { swTime++; updateSWDisplay(); }, 1000); }
+  else { swRunning = false; btn.textContent = 'Lanjut'; clearInterval(swInterval); }
+}
+function resetSW() { clearInterval(swInterval); swRunning = false; swTime = 0; document.getElementById('sw-btn').textContent = 'Mulai'; updateSWDisplay(); }
+function updateSWDisplay() {
+  const m = String(Math.floor(swTime/60)).padStart(2,'0');
+  const s = String(swTime%60).padStart(2,'0');
+  const el = document.getElementById('sw-display');
+  el.textContent = `${m}:${s}`;
+  el.className = 'timer-display ' + (swRunning ? 'running' : '');
+}
+
+// ── INTERVAL TIMER ──
+function resetIT() { clearInterval(itInterval); itRunning = false; itPhase = 'work'; itRounds = 0; itTime = parseInt(document.getElementById('work-sec').value)||40; document.getElementById('it-btn').textContent = 'Mulai'; updateITDisplay(); }
+function toggleIT() {
+  const btn = document.getElementById('it-btn');
+  if (!itRunning) { itRunning = true; btn.textContent = 'Pause'; itTime = itTime || parseInt(document.getElementById('work-sec').value); itInterval = setInterval(tickIT, 1000); }
+  else { itRunning = false; btn.textContent = 'Lanjut'; clearInterval(itInterval); }
+}
+function tickIT() {
+  itTime--;
+  if (itTime <= 0) {
+    if (itPhase === 'work') { itPhase = 'rest'; itTime = parseInt(document.getElementById('rest-sec').value)||20; showToast('💤 Istirahat!'); }
+    else { itPhase = 'work'; itRounds++; itTime = parseInt(document.getElementById('work-sec').value)||40; showToast('💪 Mulai Kerja!'); }
+  }
+  updateITDisplay();
+}
+function updateITDisplay() {
+  const m = String(Math.floor(itTime/60)).padStart(2,'0');
+  const s = String(itTime%60).padStart(2,'0');
+  const el = document.getElementById('it-display');
+  el.textContent = `${m}:${s}`;
+  el.className = 'timer-display ' + (itRunning ? (itPhase==='work' ? 'running' : 'rest') : '');
+  document.getElementById('it-phase').textContent = `Fase: ${itPhase==='work'?'💪 Kerja':'💤 Istirahat'}`;
+  document.getElementById('it-rounds').textContent = `Putaran selesai: ${itRounds}`;
+}
+
+// ── MODAL ──
+function openModal() { document.getElementById('modal').classList.add('open'); }
+function closeModal(e) { if (e.target === document.getElementById('modal')) document.getElementById('modal').classList.remove('open'); }
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── NAV ──
+function toggleMenu() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+
+// ── COUNTERS ──
+function countUp(id, end, dur=1200) {
+  const el = document.getElementById(id); let start = 0;
+  const step = dur / end;
+  const timer = setInterval(() => {
+    start += Math.ceil(end/60);
+    if (start >= end) { el.textContent = end.toLocaleString()+(end>=1000?'+':''); clearInterval(timer); }
+    else el.textContent = start.toLocaleString();
+  }, step);
+}
+
+// ── MUSIK ──
 const musikTracks = [
   { title: "Melati", artist: "Aku Jeje", ytId: "5ZKfQjBfFIE", emoji: "🌸" },
-  { title: "Melati (Demo)", artist: "Aku Jeje", ytId: "RmVHpkAnUSA", emoji: "🌼" },
+  { title: "Melati (Demo Version)", artist: "Aku Jeje", ytId: "RmVHpkAnUSA", emoji: "🌼" },
   { title: "Waktu", artist: "Aku Jeje", ytId: "EvexJv6XYFE", emoji: "⏳" },
-  { title: "Lihat Kebunku", artist: "Aku Jeje", ytId: "q6Pv4t2JLgY", emoji: "🌺" },
+  { title: "Lihat Kebunku (Taman Bunga)", artist: "Aku Jeje", ytId: "q6Pv4t2JLgY", emoji: "🌺" },
   { title: "When I Close My Eyes", artist: "Tom Odell", ytId: "u9c8VRtZhLs", emoji: "👁️" },
-  { title: "Abadi (Indo)", artist: "Dendi Nata", ytId: "wqHKxb9M2yY", emoji: "♾️" },
+  { title: "Abadi (Indo Version)", artist: "Dendi Nata", ytId: "wqHKxb9M2yY", emoji: "♾️" },
   { title: "Ini Abadi", artist: "Perunggu", ytId: "j5LY8GzCWk0", emoji: "🥉" },
   { title: "33x", artist: "Perunggu", ytId: "N5lJdRVVSy8", emoji: "🔢" },
   { title: "Multo", artist: "Cup of Joe", ytId: "2v2WGJikT2Y", emoji: "👻" },
   { title: "About You", artist: "The 1975", ytId: "FzZHt7Q3VzA", emoji: "💭" },
   { title: "her", artist: "JVKE", ytId: "tvHs6GaHJoE", emoji: "💛" },
   { title: "golden hour", artist: "JVKE", ytId: "PEM0Vs8jf1w", emoji: "🌅" },
-  { title: "golden hour (piano)", artist: "Chilled Pig", ytId: "mMFrN-K8_5Q", emoji: "🎹" },
+  { title: "golden hour (piano instrumental)", artist: "Chilled Pig", ytId: "mMFrN-K8_5Q", emoji: "🎹" },
   { title: "Euphoria", artist: "Txmy", ytId: "Jv1ksMY5JKM", emoji: "✨" },
   { title: "Seraphic", artist: "Txmy", ytId: "r73VYJ2W7oY", emoji: "😇" },
   { title: "sempurna (guitar)", artist: "emptiness", ytId: "RJk7oJkIBJ0", emoji: "🎸" },
@@ -645,165 +1232,124 @@ const musikTracks = [
   { title: "blue", artist: "yung kai", ytId: "2H6gCH7y2Vs", emoji: "🩵" },
   { title: "Sampai Akhir Waktu", artist: "Yovie & Nuno", ytId: "5VJH5mCHFZw", emoji: "💍" },
   { title: "Resah Jadi Luka", artist: "Daun Jatuh", ytId: "lKKzq6bfxYQ", emoji: "🍂" },
-  { title: "photograph (piano)", artist: "Chilled Pig", ytId: "FfiBFkUSu6s", emoji: "🎹" },
+  { title: "photograph (piano instrumental)", artist: "Chilled Pig", ytId: "FfiBFkUSu6s", emoji: "🎹" },
   { title: "Photograph", artist: "Ryan Condrey", ytId: "3QWrfKmS4z8", emoji: "📷" },
   { title: "The Man Who Can't Be Moved", artist: "The Script", ytId: "hbLJKLBMdkc", emoji: "🚶" },
-  { title: "Untuk Perempuan...", artist: "Payung Teduh", ytId: "l5lDm_4aBaI", emoji: "🍁" },
+  { title: "Untuk Perempuan Yang Sedang Di Pelukan", artist: "Payung Teduh", ytId: "l5lDm_4aBaI", emoji: "🍁" },
   { title: "Gemuruh Riuh", artist: "Mighfar Suganda", ytId: "SNz1OGHbPq0", emoji: "⛈️" },
-  { title: "Yang Patah Tumbuh", artist: "Banda Neira", ytId: "y9EwSMGFZnk", emoji: "🌿" },
+  { title: "Yang Patah Tumbuh Yang Hilang Berganti", artist: "Banda Neira", ytId: "y9EwSMGFZnk", emoji: "🌿" },
   { title: "Hitam Putih", artist: "Fourtwnty", ytId: "4-nLyoAyf8k", emoji: "⚫" },
-  { title: "Golden Hour (Fairy)", artist: "oleksandr.mp3", ytId: "EhcvkLQiqFk", emoji: "🧚" },
+  { title: "Golden Hour (Fairy Version)", artist: "oleksandr.mp3", ytId: "EhcvkLQiqFk", emoji: "🧚" },
   { title: "Favorite", artist: "Austin George", ytId: "t9CPBepO5bA", emoji: "⭐" },
   { title: "Binaon naman", artist: "KAKA DO SILVA", ytId: "jV6e5tPK3vs", emoji: "🎙️" },
-  { title: "Tamu Undangan", artist: "Mocil Fvnky", ytId: "5DvGVL7xDzc", emoji: "🎉" },
-  { title: "KAWITANING", artist: "Hindia P.", ytId: "WL5V4GaHMOE", emoji: "🌙" },
+  { title: "Tamu Undangan", artist: "Mocil Fvnky V2", ytId: "5DvGVL7xDzc", emoji: "🎉" },
+  { title: "KAWITANING SINAWANG (feat. Akbar Handoko)", artist: "Hindia Prameswara", ytId: "WL5V4GaHMOE", emoji: "🌙" },
   { title: "Tulus", artist: "Febri Handika", ytId: "1KU0VJxfMRs", emoji: "💚" },
-  { title: "Masa ini...", artist: "Nuca", ytId: "qbL9jvQ6yz8", emoji: "🐣" }
+  { title: "Masa ini, Nanti, dan Masa Indah lainnya", artist: "Nuca", ytId: "qbL9jvQ6yz8", emoji: "🐣" },
 ];
 
-const exercises = ["Push Up", "Body Squat", "Lunges", "Sit Up", "Wall Sit", "Plank"];
+let musikCurrentIdx = 0;
+let musikIsPlaying = false;
+let musikShuffle = false;
+let musikRepeat = false;
+let ytPlayer = null;
+let ytReady = false;
+let musikProgressInterval = null;
+let musikVolume = 70;
+const WAVEFORM_BARS = 50;
 
-// --- STATE ---
-let ytPlayer, ytReady = false, musikIsPlaying = false, musikCurrentIdx = 0, musikVolume = 70;
-let trackerState = new Array(6).fill(false);
-
-// --- YOUTUBE API ---
-const tag = document.createElement('script');
-tag.src = "https://www.youtube.com/iframe_api";
-document.head.appendChild(tag);
+// Load YT API once
+(function loadYTApi() {
+  if (window.YT) return;
+  const tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(tag);
+})();
 
 window.onYouTubeIframeAPIReady = function() {
   ytReady = true;
   ytPlayer = new YT.Player('ytPlayer', {
-    height: '200', width: '200',
-    playerVars: { 
-      autoplay: 0, controls: 0, modestbranding: 1, 
-      rel: 0, origin: window.location.origin 
-    },
+    height: '1', width: '1',
+    playerVars: { autoplay: 0, controls: 0, rel: 0, modestbranding: 1 },
     events: {
-      onReady: (e) => { e.target.setVolume(musikVolume); },
-      onStateChange: onPlayerStateChange
+      onReady: function() {},
+      onStateChange: function(e) {
+        if (e.data === YT.PlayerState.ENDED) {
+          if (musikRepeat) {
+            ytPlayer.seekTo(0);
+            ytPlayer.playVideo();
+          } else {
+            musikNext();
+          }
+        }
+        if (e.data === YT.PlayerState.PLAYING) {
+          musikIsPlaying = true;
+          updatePlayBtn();
+          startProgressPoll();
+        }
+        if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.BUFFERING) {
+          musikIsPlaying = (e.data === YT.PlayerState.BUFFERING);
+          if (e.data === YT.PlayerState.PAUSED) stopProgressPoll();
+          updatePlayBtn();
+        }
+      }
     }
   });
 };
 
-function onPlayerStateChange(e) {
-  if (e.data === YT.PlayerState.PLAYING) {
-    musikIsPlaying = true;
-    updatePlayBtnUI(true);
-    startProgressTimer();
-  } else {
-    musikIsPlaying = false;
-    updatePlayBtnUI(false);
+function buildWaveform() {
+  const wf = document.getElementById('musikWaveform');
+  wf.innerHTML = '';
+  const heights = Array.from({length: WAVEFORM_BARS}, () => Math.floor(Math.random() * 80 + 20));
+  for (let i = 0; i < WAVEFORM_BARS; i++) {
+    const bar = document.createElement('div');
+    bar.className = 'musik-waveform-bar';
+    bar.style.height = heights[i] + '%';
+    bar.dataset.idx = i;
+    bar.addEventListener('click', () => seekByWaveform(i));
+    wf.appendChild(bar);
   }
-  if (e.data === YT.PlayerState.ENDED) musikNext();
 }
 
-// --- MUSIC LOGIC ---
+function seekByWaveform(barIdx) {
+  if (!ytPlayer || !ytReady) return;
+  const dur = ytPlayer.getDuration ? ytPlayer.getDuration() : 0;
+  if (!dur) return;
+  const seekTo = (barIdx / WAVEFORM_BARS) * dur;
+  ytPlayer.seekTo(seekTo, true);
+  updateProgress();
+}
+
+function updateProgress() {
+  if (!ytPlayer || !ytReady || typeof ytPlayer.getCurrentTime !== 'function') return;
+  const cur = ytPlayer.getCurrentTime() || 0;
+  const dur = ytPlayer.getDuration ? ytPlayer.getDuration() : 0;
+  const pct = dur > 0 ? cur / dur : 0;
+  const playedBars = Math.floor(pct * WAVEFORM_BARS);
+  const bars = document.querySelectorAll('.musik-waveform-bar');
+  bars.forEach((b, i) => {
+    b.classList.toggle('played', i < playedBars);
+    b.classList.toggle('playing-bar', i === playedBars && musikIsPlaying);
+  });
+  document.getElementById('musikTimeCurrent').textContent = fmtTime(cur);
+  document.getElementById('musikTimeDuration').textContent = fmtTime(dur);
+}
+
+function fmtTime(s) {
+  s = Math.floor(s || 0);
+  return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
+}
+
+function startProgressPoll() {
+  stopProgressPoll();
+  musikProgressInterval = setInterval(updateProgress, 800);
+}
+function stopProgressPoll() {
+  if (musikProgressInterval) { clearInterval(musikProgressInterval); musikProgressInterval = null; }
+}
+
 function renderMusikList() {
   const list = document.getElementById('musikList');
   list.innerHTML = musikTracks.map((t, i) => `
-    <div class="musik-item ${i === musikCurrentIdx ? 'active' : ''}" onclick="playMusikAt(${i})">
-      <div class="musik-item-cover" style="background:rgba(255,255,255,0.05)">${t.emoji}</div>
-      <div>
-        <div style="font-size:14px; font-weight:600">${t.title}</div>
-        <div style="font-size:12px; color:var(--c-muted)">${t.artist}</div>
-      </div>
-    </div>
-  `).join('');
-}
-
-function playMusikAt(idx) {
-  if (!ytReady) return;
-  musikCurrentIdx = idx;
-  const t = musikTracks[idx];
-  document.getElementById('musikNowTitle').textContent = t.title;
-  document.getElementById('musikNowArtist').textContent = t.artist;
-  document.getElementById('musikCoverFallback').textContent = t.emoji;
-  
-  ytPlayer.loadVideoById(t.ytId);
-  ytPlayer.playVideo();
-  renderMusikList();
-}
-
-function toggleMusik() {
-  if (!ytReady) return;
-  if (musikIsPlaying) {
-    ytPlayer.pauseVideo();
-  } else {
-    // Jika belum ada lagu terpilih, mulai dari lagu pertama
-    const state = ytPlayer.getPlayerState();
-    if (state === -1 || state === 5) playMusikAt(musikCurrentIdx);
-    else ytPlayer.playVideo();
-  }
-}
-
-function musikNext() { playMusikAt((musikCurrentIdx + 1) % musikTracks.length); }
-function musikPrev() { playMusikAt((musikCurrentIdx - 1 + musikTracks.length) % musikTracks.length); }
-
-function setVolume(v) { musikVolume = v; if(ytReady) ytPlayer.setVolume(v); }
-
-function updatePlayBtnUI(playing) {
-  document.getElementById('musikPlayBtn').textContent = playing ? '⏸' : '▶';
-  document.getElementById('musikCoverInner').classList.toggle('playing', playing);
-}
-
-function startProgressTimer() {
-  setInterval(() => {
-    if (musikIsPlaying && ytPlayer.getCurrentTime) {
-      const cur = ytPlayer.getCurrentTime();
-      const dur = ytPlayer.getDuration();
-      document.getElementById('musikTimeCurrent').textContent = formatTime(cur);
-      document.getElementById('musikTimeDuration').textContent = formatTime(dur);
-      updateWaveform(cur/dur);
-    }
-  }, 1000);
-}
-
-function formatTime(s) {
-  return Math.floor(s/60) + ":" + String(Math.floor(s%60)).padStart(2,'0');
-}
-
-function updateWaveform(pct) {
-  const bars = document.querySelectorAll('.musik-waveform-bar');
-  const activeCount = Math.floor(pct * bars.length);
-  bars.forEach((b, i) => b.classList.toggle('played', i <= activeCount));
-}
-
-// --- UI HELPERS ---
-function openModal() { document.getElementById('modal').classList.add('open'); }
-function closeModal(e) { if(!e || e.target.id === 'modal') document.getElementById('modal').classList.remove('open'); }
-
-function showToast(m) {
-  const t = document.getElementById('toast'); t.textContent = m;
-  t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000);
-}
-
-function renderTracker() {
-  const container = document.getElementById('exRows');
-  container.innerHTML = exercises.map((ex, i) => `
-    <div class="ex-row ${trackerState[i] ? 'done' : ''}">
-      <div><div class="ex-name-row">${ex}</div><div style="font-size:12px;color:var(--c-dim)">Target: 50 Reps</div></div>
-      <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${trackerState[i]?100:0}%"></div></div>
-      <button class="check-btn" onclick="toggleEx(${i})">${trackerState[i]?'✓':'○'}</button>
-    </div>
-  `).join('');
-  document.getElementById('totalScore').innerHTML = `${trackerState.filter(Boolean).length} <span>/ 6 selesai</span>`;
-}
-
-function toggleEx(i) { trackerState[i] = !trackerState[i]; renderTracker(); if(trackerState[i]) showToast("Mantap! Lanjutkan!"); }
-function resetTracker() { trackerState = new Array(6).fill(false); renderTracker(); }
-
-// --- INIT ---
-document.getElementById('today-date').textContent = new Date().toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'long'});
-const wf = document.getElementById('musikWaveform');
-for(let i=0; i<30; i++) {
-  const b = document.createElement('div'); b.className='musik-waveform-bar';
-  b.style.height = (Math.random()*30 + 10) + 'px';
-  wf.appendChild(b);
-}
-renderTracker();
-renderMusikList();
-</script>
-</body>
-</html>
+    <div class="musik-item ${i === musikCurrentIdx ? 'active' : ''}" onclick="playMusikAt(${i})" id="mitem-${i}">
+      <div class="musik-item-cover" style="background:${getCoverGradient(i)}">${t.emoji}<
