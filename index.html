@@ -1374,25 +1374,57 @@ function getCoverGradient(i) {
 }
 
 function updatePlayerUI(t) {
-  document.getElementById('musikNowTitle').textContent = t.title;
-  document.getElementById('musikNowArtist').textContent = t.artist;
+  const titleEl = document.getElementById('musikNowTitle');
+  const artistEl = document.getElementById('musikNowArtist');
+  const coverWrap = document.getElementById('musikCoverWrap');
+  
+  // 1. Hapus class animasi untuk mereset
+  titleEl.classList.remove('animate-text');
+  artistEl.classList.remove('animate-text');
+  coverWrap.classList.remove('animate-cover');
+  
+  // 2. Trik 'Reflow' agar browser merestart animasi dari awal
+  void titleEl.offsetWidth; 
+  
+  // 3. Update teks dan emoji
+  titleEl.textContent = t.title;
+  artistEl.textContent = t.artist;
   document.getElementById('musikCoverFallback').style.display = 'flex';
   document.getElementById('musikCoverFallback').style.alignItems = 'center';
   document.getElementById('musikCoverFallback').style.justifyContent = 'center';
   document.getElementById('musikCoverFallback').textContent = t.emoji;
-  const imgEl = document.getElementById('musikCoverImg');
-  imgEl.style.display = 'none';
+  document.getElementById('musikCoverImg').style.display = 'none';
+  
+  // 4. Tambahkan kembali class animasinya
+  titleEl.classList.add('animate-text');
+  artistEl.classList.add('animate-text');
+  coverWrap.classList.add('animate-cover');
+
+  // Update elemen lainnya
   buildWaveform();
   renderMusikList();
-  // scroll active into view
+  
+  // Scroll playlist otomatis ke lagu yang aktif
   const activeItem = document.getElementById('mitem-' + musikCurrentIdx);
   if (activeItem) activeItem.scrollIntoView({block:'nearest', behavior:'smooth'});
 }
 
 function updatePlayBtn() {
   const btn = document.getElementById('musikPlayBtn');
+  const coverInner = document.querySelector('.musik-cover-inner'); // Ambil elemen inner cover
+  
+  // Ubah icon tombol Play/Pause
   btn.textContent = musikIsPlaying ? '⏸' : '▶';
   btn.classList.toggle('playing', musikIsPlaying);
+  
+  // Putar atau hentikan animasi cover bundar
+  if (coverInner) {
+    if (musikIsPlaying) {
+      coverInner.classList.add('playing');
+    } else {
+      coverInner.classList.remove('playing');
+    }
+  }
 }
 
 function playMusikAt(idx) {
