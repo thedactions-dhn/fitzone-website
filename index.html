@@ -371,6 +371,206 @@
   .host-card.recommended .host-btn { background: var(--c-primary); border-color: var(--c-primary); color: white; }
   .host-card.recommended .host-btn:hover { background: #2563eb; }
 
+  /* ── MUSIK ── */
+  #musik { background: var(--c-surface); }
+  .musik-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 24px;
+    max-width: 1100px;
+    align-items: start;
+  }
+  /* Player Card */
+  .musik-player-card {
+    background: var(--c-card);
+    border: 1px solid var(--c-border);
+    border-radius: 20px;
+    padding: 28px 24px;
+    position: sticky;
+    top: 80px;
+  }
+  .musik-cover-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #1e1e2e, #2a1a3e);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .musik-cover-img {
+    width: 100%; height: 100%; object-fit: cover;
+    border-radius: 14px;
+    transition: opacity 0.4s;
+  }
+  .musik-cover-fallback {
+    font-size: 60px;
+    position: absolute;
+  }
+  .musik-now-title {
+    font-size: 15px; font-weight: 700;
+    color: var(--c-text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-bottom: 4px;
+  }
+  .musik-now-artist {
+    font-size: 13px; color: var(--c-muted); margin-bottom: 20px;
+  }
+  /* Progress / Waveform bar */
+  .musik-progress-wrap {
+    margin-bottom: 16px;
+    cursor: pointer;
+  }
+  .musik-waveform {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 36px;
+    margin-bottom: 6px;
+    cursor: pointer;
+  }
+  .musik-waveform-bar {
+    flex: 1;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.08);
+    transition: background 0.2s, height 0.1s;
+    min-height: 3px;
+    position: relative;
+  }
+  .musik-waveform-bar.played {
+    background: var(--c-primary);
+  }
+  .musik-waveform-bar.playing-bar {
+    animation: waveAnim 0.6s ease-in-out infinite alternate;
+  }
+  @keyframes waveAnim {
+    from { transform: scaleY(0.6); }
+    to { transform: scaleY(1); }
+  }
+  .musik-time-row {
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 11px; color: var(--c-dim);
+  }
+  /* Controls */
+  .musik-controls {
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+    margin-bottom: 20px;
+  }
+  .musik-ctrl-btn {
+    background: none; border: none; color: var(--c-muted);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: color 0.2s, transform 0.15s;
+    font-size: 18px; padding: 4px;
+    border-radius: 6px;
+  }
+  .musik-ctrl-btn:hover { color: var(--c-text); transform: scale(1.1); }
+  .musik-ctrl-btn.active { color: var(--c-primary); }
+  .musik-play-btn {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: var(--c-primary); border: none; color: white;
+    font-size: 20px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(59,130,246,0.4);
+  }
+  .musik-play-btn:hover { background: #2563eb; transform: scale(1.06); box-shadow: 0 6px 24px rgba(59,130,246,0.5); }
+  .musik-play-btn.playing { background: var(--c-accent); box-shadow: 0 4px 20px rgba(249,115,22,0.4); }
+  .musik-play-btn.playing:hover { background: #ea6c0a; }
+  /* Volume */
+  .musik-volume-row {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .musik-vol-icon { font-size: 16px; color: var(--c-muted); flex-shrink: 0; }
+  .musik-vol-slider {
+    -webkit-appearance: none; appearance: none;
+    flex: 1; height: 4px; border-radius: 2px;
+    background: rgba(255,255,255,0.1);
+    cursor: pointer; outline: none;
+    transition: height 0.15s;
+  }
+  .musik-vol-slider:hover { height: 6px; }
+  .musik-vol-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--c-primary); cursor: pointer;
+    box-shadow: 0 0 6px rgba(59,130,246,0.5);
+  }
+  .musik-vol-num {
+    font-family: var(--font-mono); font-size: 11px; color: var(--c-dim);
+    min-width: 28px; text-align: right;
+  }
+  /* Playlist */
+  .musik-playlist-wrap {
+    background: var(--c-card);
+    border: 1px solid var(--c-border);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .musik-playlist-header {
+    padding: 20px 22px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--c-border);
+  }
+  .musik-playlist-title { font-size: 15px; font-weight: 700; }
+  .musik-playlist-count { font-size: 12px; color: var(--c-muted); font-family: var(--font-mono); }
+  .musik-list { max-height: 540px; overflow-y: auto; }
+  .musik-list::-webkit-scrollbar { width: 4px; }
+  .musik-list::-webkit-scrollbar-track { background: transparent; }
+  .musik-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+  .musik-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 22px;
+    cursor: pointer; transition: background 0.15s;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+  .musik-item:hover { background: rgba(255,255,255,0.03); }
+  .musik-item.active {
+    background: rgba(59,130,246,0.08);
+    border-left: 3px solid var(--c-primary);
+  }
+  .musik-item-cover {
+    width: 44px; height: 44px; border-radius: 8px;
+    flex-shrink: 0; object-fit: cover;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    overflow: hidden;
+  }
+  .musik-item-cover img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+  .musik-item-info { flex: 1; min-width: 0; }
+  .musik-item-title {
+    font-size: 13px; font-weight: 600; color: var(--c-text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .musik-item.active .musik-item-title { color: var(--c-primary); }
+  .musik-item-artist { font-size: 12px; color: var(--c-muted); margin-top: 2px; }
+  .musik-item-num {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--c-dim); min-width: 22px; text-align: right; flex-shrink: 0;
+  }
+  .musik-item.active .musik-item-num { color: var(--c-primary); }
+  .musik-playing-anim {
+    display: flex; align-items: flex-end; gap: 2px; height: 14px;
+  }
+  .musik-playing-anim span {
+    display: block; width: 3px; background: var(--c-primary); border-radius: 2px;
+    animation: musikBarAnim 0.8s ease-in-out infinite alternate;
+  }
+  .musik-playing-anim span:nth-child(1) { height: 6px; animation-delay: 0s; }
+  .musik-playing-anim span:nth-child(2) { height: 12px; animation-delay: 0.15s; }
+  .musik-playing-anim span:nth-child(3) { height: 8px; animation-delay: 0.3s; }
+  .musik-playing-anim span:nth-child(4) { height: 14px; animation-delay: 0.1s; }
+  .musik-playing-anim span:nth-child(5) { height: 5px; animation-delay: 0.25s; }
+  @keyframes musikBarAnim {
+    from { transform: scaleY(0.4); }
+    to { transform: scaleY(1); }
+  }
+  @media(max-width: 900px) {
+    .musik-layout { grid-template-columns: 1fr; }
+    .musik-player-card { position: static; }
+  }
+
   /* ── FOOTER ── */
   footer {
     padding: 40px 5vw 30px;
@@ -438,6 +638,7 @@
     <li><a href="#timer">Timer</a></li>
     <li><a href="#panduan">Panduan</a></li>
     <li><a href="#hosting">Hosting</a></li>
+    <li><a href="#musik">Musik</a></li>
   </ul>
   <button class="nav-cta" onclick="openModal()">Mulai Gratis</button>
   <div class="burger" id="burger" onclick="toggleMenu()">
@@ -730,6 +931,63 @@
   </div>
 </section>
 
+<!-- MUSIK -->
+<section id="musik">
+  <div class="sec-label fade-up">Playlist Favorit</div>
+  <div class="sec-title fade-up">Musik Saat Olahraga</div>
+  <p class="sec-sub fade-up">Dengarkan musik favoritmu lewat YouTube tanpa berhenti saat berpindah halaman.</p>
+  <div class="musik-layout fade-up">
+    <!-- PLAYER CARD -->
+    <div class="musik-player-card">
+      <div class="musik-cover-wrap" id="musikCoverWrap">
+        <span class="musik-cover-fallback" id="musikCoverFallback">🎵</span>
+        <img class="musik-cover-img" id="musikCoverImg" src="" alt="" style="display:none" onerror="this.style.display='none';document.getElementById('musikCoverFallback').style.display='block'">
+      </div>
+      <div class="musik-now-title" id="musikNowTitle">Pilih lagu untuk diputar</div>
+      <div class="musik-now-artist" id="musikNowArtist">—</div>
+
+      <!-- Waveform Progress -->
+      <div class="musik-progress-wrap">
+        <div class="musik-waveform" id="musikWaveform"></div>
+        <div class="musik-time-row">
+          <span id="musikTimeCurrent">0:00</span>
+          <span id="musikTimeDuration">0:00</span>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="musik-controls">
+        <button class="musik-ctrl-btn" id="musikShuffleBtn" title="Acak" onclick="toggleShuffle()">🔀</button>
+        <button class="musik-ctrl-btn" onclick="musikPrev()" title="Sebelumnya">⏮</button>
+        <button class="musik-play-btn" id="musikPlayBtn" onclick="toggleMusik()">▶</button>
+        <button class="musik-ctrl-btn" onclick="musikNext()" title="Selanjutnya">⏭</button>
+        <button class="musik-ctrl-btn" id="musikRepeatBtn" title="Ulangi 1 lagu" onclick="toggleRepeat()">🔁</button>
+      </div>
+
+      <!-- Volume -->
+      <div class="musik-volume-row">
+        <span class="musik-vol-icon" id="musikVolIcon">🔊</span>
+        <input type="range" class="musik-vol-slider" id="musikVolSlider" min="0" max="100" value="70" oninput="setVolume(this.value)">
+        <span class="musik-vol-num" id="musikVolNum">70</span>
+      </div>
+    </div>
+
+    <!-- PLAYLIST -->
+    <div class="musik-playlist-wrap">
+      <div class="musik-playlist-header">
+        <span class="musik-playlist-title">🎶 Playlist</span>
+        <span class="musik-playlist-count" id="musikPlaylistCount">0 lagu</span>
+      </div>
+      <div class="musik-list" id="musikList"></div>
+    </div>
+  </div>
+
+  <!-- Hidden YouTube iframe -->
+  <div id="ytPlayerWrap" style="position:fixed;bottom:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;">
+    <div id="ytPlayer"></div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-logo">FIT<span>ZONE</span></div>
@@ -980,7 +1238,265 @@ function countUp(id, end, dur=1200) {
   }, step);
 }
 
-// ── SCROLL ANIMATIONS ──
+// ── MUSIK ──
+const musikTracks = [
+  { title: "Melati", artist: "Aku Jeje", ytId: "5ZKfQjBfFIE", emoji: "🌸" },
+  { title: "Melati (Demo Version)", artist: "Aku Jeje", ytId: "RmVHpkAnUSA", emoji: "🌼" },
+  { title: "Waktu", artist: "Aku Jeje", ytId: "EvexJv6XYFE", emoji: "⏳" },
+  { title: "Lihat Kebunku (Taman Bunga)", artist: "Aku Jeje", ytId: "q6Pv4t2JLgY", emoji: "🌺" },
+  { title: "When I Close My Eyes", artist: "Tom Odell", ytId: "u9c8VRtZhLs", emoji: "👁️" },
+  { title: "Abadi (Indo Version)", artist: "Dendi Nata", ytId: "wqHKxb9M2yY", emoji: "♾️" },
+  { title: "Ini Abadi", artist: "Perunggu", ytId: "j5LY8GzCWk0", emoji: "🥉" },
+  { title: "33x", artist: "Perunggu", ytId: "N5lJdRVVSy8", emoji: "🔢" },
+  { title: "Multo", artist: "Cup of Joe", ytId: "2v2WGJikT2Y", emoji: "👻" },
+  { title: "About You", artist: "The 1975", ytId: "FzZHt7Q3VzA", emoji: "💭" },
+  { title: "her", artist: "JVKE", ytId: "tvHs6GaHJoE", emoji: "💛" },
+  { title: "golden hour", artist: "JVKE", ytId: "PEM0Vs8jf1w", emoji: "🌅" },
+  { title: "golden hour (piano instrumental)", artist: "Chilled Pig", ytId: "mMFrN-K8_5Q", emoji: "🎹" },
+  { title: "Euphoria", artist: "Txmy", ytId: "Jv1ksMY5JKM", emoji: "✨" },
+  { title: "Seraphic", artist: "Txmy", ytId: "r73VYJ2W7oY", emoji: "😇" },
+  { title: "sempurna (guitar)", artist: "emptiness", ytId: "RJk7oJkIBJ0", emoji: "🎸" },
+  { title: "For a Moment", artist: "Alej", ytId: "i3WV3QLHM5M", emoji: "🕰️" },
+  { title: "March", artist: "Art Music", ytId: "OcJGHeDVkpA", emoji: "🎼" },
+  { title: "blue", artist: "yung kai", ytId: "2H6gCH7y2Vs", emoji: "🩵" },
+  { title: "Sampai Akhir Waktu", artist: "Yovie & Nuno", ytId: "5VJH5mCHFZw", emoji: "💍" },
+  { title: "Resah Jadi Luka", artist: "Daun Jatuh", ytId: "lKKzq6bfxYQ", emoji: "🍂" },
+  { title: "photograph (piano instrumental)", artist: "Chilled Pig", ytId: "FfiBFkUSu6s", emoji: "🎹" },
+  { title: "Photograph", artist: "Ryan Condrey", ytId: "3QWrfKmS4z8", emoji: "📷" },
+  { title: "The Man Who Can't Be Moved", artist: "The Script", ytId: "hbLJKLBMdkc", emoji: "🚶" },
+  { title: "Untuk Perempuan Yang Sedang Di Pelukan", artist: "Payung Teduh", ytId: "l5lDm_4aBaI", emoji: "🤗" },
+  { title: "Gemuruh Riuh", artist: "Mighfar Suganda", ytId: "SNz1OGHbPq0", emoji: "⛈️" },
+  { title: "Yang Patah Tumbuh Yang Hilang Berganti", artist: "Banda Neira", ytId: "y9EwSMGFZnk", emoji: "🌿" },
+  { title: "Hitam Putih", artist: "Fourtwnty", ytId: "4-nLyoAyf8k", emoji: "⚫" },
+  { title: "Golden Hour (Fairy Version)", artist: "oleksandr.mp3", ytId: "EhcvkLQiqFk", emoji: "🧚" },
+  { title: "Favorite", artist: "Austin George", ytId: "t9CPBepO5bA", emoji: "⭐" },
+  { title: "Binaon naman", artist: "KAKA DOy SILVA", ytId: "jV6e5tPK3vs", emoji: "🎙️" },
+  { title: "Tamu Undangan", artist: "Mocil Fvnky V2", ytId: "5DvGVL7xDzc", emoji: "🎉" },
+  { title: "KAWITANING SINAWANG (feat. Akbar Handoko)", artist: "Hindia Prameswara", ytId: "WL5V4GaHMOE", emoji: "🌙" },
+  { title: "Tulus", artist: "Febri Handika", ytId: "1KU0VJxfMRs", emoji: "💚" },
+  { title: "Masa ini Nanti dan Masa Indah lainnya", artist: "Nuca", ytId: "qbL9jvQ6yz8", emoji: "🌈" },
+];
+
+let musikCurrentIdx = 0;
+let musikIsPlaying = false;
+let musikShuffle = false;
+let musikRepeat = false;
+let ytPlayer = null;
+let ytReady = false;
+let musikProgressInterval = null;
+let musikVolume = 70;
+const WAVEFORM_BARS = 50;
+
+// Load YT API once
+(function loadYTApi() {
+  if (window.YT) return;
+  const tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(tag);
+})();
+
+window.onYouTubeIframeAPIReady = function() {
+  ytReady = true;
+  ytPlayer = new YT.Player('ytPlayer', {
+    height: '1', width: '1',
+    playerVars: { autoplay: 0, controls: 0, rel: 0, modestbranding: 1 },
+    events: {
+      onReady: function() {},
+      onStateChange: function(e) {
+        if (e.data === YT.PlayerState.ENDED) {
+          if (musikRepeat) {
+            ytPlayer.seekTo(0);
+            ytPlayer.playVideo();
+          } else {
+            musikNext();
+          }
+        }
+        if (e.data === YT.PlayerState.PLAYING) {
+          musikIsPlaying = true;
+          updatePlayBtn();
+          startProgressPoll();
+        }
+        if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.BUFFERING) {
+          musikIsPlaying = (e.data === YT.PlayerState.BUFFERING);
+          if (e.data === YT.PlayerState.PAUSED) stopProgressPoll();
+          updatePlayBtn();
+        }
+      }
+    }
+  });
+};
+
+function buildWaveform() {
+  const wf = document.getElementById('musikWaveform');
+  wf.innerHTML = '';
+  const heights = Array.from({length: WAVEFORM_BARS}, () => Math.floor(Math.random() * 80 + 20));
+  for (let i = 0; i < WAVEFORM_BARS; i++) {
+    const bar = document.createElement('div');
+    bar.className = 'musik-waveform-bar';
+    bar.style.height = heights[i] + '%';
+    bar.dataset.idx = i;
+    bar.addEventListener('click', () => seekByWaveform(i));
+    wf.appendChild(bar);
+  }
+}
+
+function seekByWaveform(barIdx) {
+  if (!ytPlayer || !ytReady) return;
+  const dur = ytPlayer.getDuration ? ytPlayer.getDuration() : 0;
+  if (!dur) return;
+  const seekTo = (barIdx / WAVEFORM_BARS) * dur;
+  ytPlayer.seekTo(seekTo, true);
+  updateProgress();
+}
+
+function updateProgress() {
+  if (!ytPlayer || !ytReady || typeof ytPlayer.getCurrentTime !== 'function') return;
+  const cur = ytPlayer.getCurrentTime() || 0;
+  const dur = ytPlayer.getDuration ? ytPlayer.getDuration() : 0;
+  const pct = dur > 0 ? cur / dur : 0;
+  const playedBars = Math.floor(pct * WAVEFORM_BARS);
+  const bars = document.querySelectorAll('.musik-waveform-bar');
+  bars.forEach((b, i) => {
+    b.classList.toggle('played', i < playedBars);
+    b.classList.toggle('playing-bar', i === playedBars && musikIsPlaying);
+  });
+  document.getElementById('musikTimeCurrent').textContent = fmtTime(cur);
+  document.getElementById('musikTimeDuration').textContent = fmtTime(dur);
+}
+
+function fmtTime(s) {
+  s = Math.floor(s || 0);
+  return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
+}
+
+function startProgressPoll() {
+  stopProgressPoll();
+  musikProgressInterval = setInterval(updateProgress, 800);
+}
+function stopProgressPoll() {
+  if (musikProgressInterval) { clearInterval(musikProgressInterval); musikProgressInterval = null; }
+}
+
+function renderMusikList() {
+  const list = document.getElementById('musikList');
+  list.innerHTML = musikTracks.map((t, i) => `
+    <div class="musik-item ${i === musikCurrentIdx ? 'active' : ''}" onclick="playMusikAt(${i})" id="mitem-${i}">
+      <div class="musik-item-cover" style="background:${getCoverGradient(i)}">${t.emoji}</div>
+      <div class="musik-item-info">
+        <div class="musik-item-title">${t.title}</div>
+        <div class="musik-item-artist">${t.artist}</div>
+      </div>
+      <div class="musik-item-num">${i === musikCurrentIdx ? `<div class="musik-playing-anim"><span></span><span></span><span></span><span></span><span></span></div>` : String(i+1).padStart(2,'0')}</div>
+    </div>
+  `).join('');
+  document.getElementById('musikPlaylistCount').textContent = musikTracks.length + ' lagu';
+}
+
+function getCoverGradient(i) {
+  const gradients = [
+    'linear-gradient(135deg,#1e1b4b,#312e81)','linear-gradient(135deg,#14532d,#166534)',
+    'linear-gradient(135deg,#7c2d12,#9a3412)','linear-gradient(135deg,#1e3a5f,#1d4ed8)',
+    'linear-gradient(135deg,#4a1942,#7e22ce)','linear-gradient(135deg,#134e4a,#0f766e)',
+    'linear-gradient(135deg,#3f1010,#dc2626)','linear-gradient(135deg,#1c1917,#44403c)',
+  ];
+  return gradients[i % gradients.length];
+}
+
+function updatePlayerUI(t) {
+  document.getElementById('musikNowTitle').textContent = t.title;
+  document.getElementById('musikNowArtist').textContent = t.artist;
+  document.getElementById('musikCoverFallback').style.display = 'flex';
+  document.getElementById('musikCoverFallback').style.alignItems = 'center';
+  document.getElementById('musikCoverFallback').style.justifyContent = 'center';
+  document.getElementById('musikCoverFallback').textContent = t.emoji;
+  const imgEl = document.getElementById('musikCoverImg');
+  imgEl.style.display = 'none';
+  buildWaveform();
+  renderMusikList();
+  // scroll active into view
+  const activeItem = document.getElementById('mitem-' + musikCurrentIdx);
+  if (activeItem) activeItem.scrollIntoView({block:'nearest', behavior:'smooth'});
+}
+
+function updatePlayBtn() {
+  const btn = document.getElementById('musikPlayBtn');
+  btn.textContent = musikIsPlaying ? '⏸' : '▶';
+  btn.classList.toggle('playing', musikIsPlaying);
+}
+
+function playMusikAt(idx) {
+  musikCurrentIdx = idx;
+  const t = musikTracks[idx];
+  updatePlayerUI(t);
+  if (!ytReady) {
+    setTimeout(() => playMusikAt(idx), 500); return;
+  }
+  ytPlayer.loadVideoById({ videoId: t.ytId });
+  ytPlayer.setVolume(musikVolume);
+  musikIsPlaying = true;
+  updatePlayBtn();
+}
+
+function toggleMusik() {
+  if (!ytReady || !ytPlayer) return;
+  const state = ytPlayer.getPlayerState ? ytPlayer.getPlayerState() : -1;
+  if (state === YT.PlayerState.PLAYING) {
+    ytPlayer.pauseVideo();
+    musikIsPlaying = false;
+  } else if (state === YT.PlayerState.PAUSED || state === YT.PlayerState.CUED) {
+    ytPlayer.playVideo();
+    musikIsPlaying = true;
+  } else {
+    playMusikAt(musikCurrentIdx);
+  }
+  updatePlayBtn();
+}
+
+function musikNext() {
+  let next;
+  if (musikShuffle) {
+    next = Math.floor(Math.random() * musikTracks.length);
+    if (next === musikCurrentIdx && musikTracks.length > 1) next = (next + 1) % musikTracks.length;
+  } else {
+    next = (musikCurrentIdx + 1) % musikTracks.length;
+  }
+  playMusikAt(next);
+}
+
+function musikPrev() {
+  if (ytPlayer && ytReady) {
+    const cur = ytPlayer.getCurrentTime ? ytPlayer.getCurrentTime() : 0;
+    if (cur > 3) { ytPlayer.seekTo(0, true); return; }
+  }
+  const prev = (musikCurrentIdx - 1 + musikTracks.length) % musikTracks.length;
+  playMusikAt(prev);
+}
+
+function toggleShuffle() {
+  musikShuffle = !musikShuffle;
+  document.getElementById('musikShuffleBtn').classList.toggle('active', musikShuffle);
+  showToast(musikShuffle ? '🔀 Acak aktif' : '🔀 Acak nonaktif');
+}
+
+function toggleRepeat() {
+  musikRepeat = !musikRepeat;
+  document.getElementById('musikRepeatBtn').classList.toggle('active', musikRepeat);
+  showToast(musikRepeat ? '🔁 Ulangi 1 lagu aktif' : '🔁 Ulangi nonaktif');
+}
+
+function setVolume(val) {
+  musikVolume = parseInt(val);
+  document.getElementById('musikVolNum').textContent = musikVolume;
+  const icon = musikVolume === 0 ? '🔇' : musikVolume < 40 ? '🔉' : '🔊';
+  document.getElementById('musikVolIcon').textContent = icon;
+  if (ytPlayer && ytReady && ytPlayer.setVolume) ytPlayer.setVolume(musikVolume);
+}
+
+// Init musik
+renderMusikList();
+updatePlayerUI(musikTracks[0]);
+buildWaveform();
+
 const observer = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.1 });
