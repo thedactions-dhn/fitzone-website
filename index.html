@@ -1241,7 +1241,7 @@ const musikTracks = [
   { title: "Hitam Putih", artist: "Fourtwnty", ytId: "4-nLyoAyf8k", emoji: "⚫" },
   { title: "Golden Hour (Fairy Version)", artist: "oleksandr.mp3", ytId: "EhcvkLQiqFk", emoji: "🧚" },
   { title: "Favorite", artist: "Austin George", ytId: "t9CPBepO5bA", emoji: "⭐" },
-  { title: "Binaon naman", artist: "KAKA DO SILVA", ytId: "jV6e5tPK3vs", emoji: "🎙️" },
+  { title: "Binaon naman", artist: "KAKA DOy SILVA", ytId: "jV6e5tPK3vs", emoji: "🎙️" },
   { title: "Tamu Undangan", artist: "Mocil Fvnky V2", ytId: "5DvGVL7xDzc", emoji: "🎉" },
   { title: "KAWITANING SINAWANG (feat. Akbar Handoko)", artist: "Hindia Prameswara", ytId: "WL5V4GaHMOE", emoji: "🌙" },
   { title: "Tulus", artist: "Febri Handika", ytId: "1KU0VJxfMRs", emoji: "💚" },
@@ -1352,4 +1352,169 @@ function renderMusikList() {
   const list = document.getElementById('musikList');
   list.innerHTML = musikTracks.map((t, i) => `
     <div class="musik-item ${i === musikCurrentIdx ? 'active' : ''}" onclick="playMusikAt(${i})" id="mitem-${i}">
-      <div class="musik-item-cover" style="background:${getCoverGradient(i)}">${t.emoji}<
+      <div class="musik-item-cover" style="background:${getCoverGradient(i)}">${t.emoji}</div>
+      <div class="musik-item-info">
+        <div class="musik-item-title">${t.title}</div>
+        <div class="musik-item-artist">${t.artist}</div>
+      </div>
+      <div class="musik-item-num">${i === musikCurrentIdx ? `<div class="musik-playing-anim"><span></span><span></span><span></span><span></span><span></span></div>` : String(i+1).padStart(2,'0')}</div>
+    </div>
+  `).join('');
+  document.getElementById('musikPlaylistCount').textContent = musikTracks.length + ' lagu';
+}
+
+function getCoverGradient(i) {
+  const gradients = [
+    'linear-gradient(135deg,#1e1b4b,#312e81)','linear-gradient(135deg,#14532d,#166534)',
+    'linear-gradient(135deg,#7c2d12,#9a3412)','linear-gradient(135deg,#1e3a5f,#1d4ed8)',
+    'linear-gradient(135deg,#4a1942,#7e22ce)','linear-gradient(135deg,#134e4a,#0f766e)',
+    'linear-gradient(135deg,#3f1010,#dc2626)','linear-gradient(135deg,#1c1917,#44403c)',
+  ];
+  return gradients[i % gradients.length];
+}
+
+function updatePlayerUI(t) {
+  const titleEl = document.getElementById('musikNowTitle');
+  const artistEl = document.getElementById('musikNowArtist');
+  const coverWrap = document.getElementById('musikCoverWrap');
+  
+  // 1. Hapus class animasi untuk mereset
+  titleEl.classList.remove('animate-text');
+  artistEl.classList.remove('animate-text');
+  coverWrap.classList.remove('animate-cover');
+  
+  // 2. Trik 'Reflow' agar browser merestart animasi dari awal
+  void titleEl.offsetWidth; 
+  
+  // 3. Update teks dan emoji
+  titleEl.textContent = t.title;
+  artistEl.textContent = t.artist;
+  document.getElementById('musikCoverFallback').style.display = 'flex';
+  document.getElementById('musikCoverFallback').style.alignItems = 'center';
+  document.getElementById('musikCoverFallback').style.justifyContent = 'center';
+  document.getElementById('musikCoverFallback').textContent = t.emoji;
+  document.getElementById('musikCoverImg').style.display = 'none';
+  
+  // 4. Tambahkan kembali class animasinya
+  titleEl.classList.add('animate-text');
+  artistEl.classList.add('animate-text');
+  coverWrap.classList.add('animate-cover');
+
+  // Update elemen lainnya
+  buildWaveform();
+  renderMusikList();
+  
+  // Scroll playlist otomatis ke lagu yang aktif
+  const activeItem = document.getElementById('mitem-' + musikCurrentIdx);
+  if (activeItem) activeItem.scrollIntoView({block:'nearest', behavior:'smooth'});
+}
+
+function updatePlayBtn() {
+  const btn = document.getElementById('musikPlayBtn');
+  const coverInner = document.querySelector('.musik-cover-inner'); // Ambil elemen inner cover
+  
+  // Ubah icon tombol Play/Pause
+  btn.textContent = musikIsPlaying ? '⏸' : '▶';
+  btn.classList.toggle('playing', musikIsPlaying);
+  
+  // Putar atau hentikan animasi cover bundar
+  if (coverInner) {
+    if (musikIsPlaying) {
+      coverInner.classList.add('playing');
+    } else {
+      coverInner.classList.remove('playing');
+    }
+  }
+}
+
+function playMusikAt(idx) {
+  musikCurrentIdx = idx;
+  const t = musikTracks[idx];
+  updatePlayerUI(t);
+  if (!ytReady) {
+    setTimeout(() => playMusikAt(idx), 500); return;
+  }
+  ytPlayer.loadVideoById({ videoId: t.ytId });
+  ytPlayer.setVolume(musikVolume);
+  musikIsPlaying = true;
+  updatePlayBtn();
+}
+
+function toggleMusik() {
+  if (!ytReady || !ytPlayer) return;
+  const state = ytPlayer.getPlayerState ? ytPlayer.getPlayerState() : -1;
+  if (state === YT.PlayerState.PLAYING) {
+    ytPlayer.pauseVideo();
+    musikIsPlaying = false;
+  } else if (state === YT.PlayerState.PAUSED || state === YT.PlayerState.CUED) {
+    ytPlayer.playVideo();
+    musikIsPlaying = true;
+  } else {
+    playMusikAt(musikCurrentIdx);
+  }
+  updatePlayBtn();
+}
+
+function musikNext() {
+  let next;
+  if (musikShuffle) {
+    next = Math.floor(Math.random() * musikTracks.length);
+    if (next === musikCurrentIdx && musikTracks.length > 1) next = (next + 1) % musikTracks.length;
+  } else {
+    next = (musikCurrentIdx + 1) % musikTracks.length;
+  }
+  playMusikAt(next);
+}
+
+function musikPrev() {
+  if (ytPlayer && ytReady) {
+    const cur = ytPlayer.getCurrentTime ? ytPlayer.getCurrentTime() : 0;
+    if (cur > 3) { ytPlayer.seekTo(0, true); return; }
+  }
+  const prev = (musikCurrentIdx - 1 + musikTracks.length) % musikTracks.length;
+  playMusikAt(prev);
+}
+
+function toggleShuffle() {
+  musikShuffle = !musikShuffle;
+  document.getElementById('musikShuffleBtn').classList.toggle('active', musikShuffle);
+  showToast(musikShuffle ? '🔀 Acak aktif' : '🔀 Acak nonaktif');
+}
+
+function toggleRepeat() {
+  musikRepeat = !musikRepeat;
+  document.getElementById('musikRepeatBtn').classList.toggle('active', musikRepeat);
+  showToast(musikRepeat ? '🔁 Ulangi 1 lagu aktif' : '🔁 Ulangi nonaktif');
+}
+
+function setVolume(val) {
+  musikVolume = parseInt(val);
+  document.getElementById('musikVolNum').textContent = musikVolume;
+  const icon = musikVolume === 0 ? '🔇' : musikVolume < 40 ? '🔉' : '🔊';
+  document.getElementById('musikVolIcon').textContent = icon;
+  if (ytPlayer && ytReady && ytPlayer.setVolume) ytPlayer.setVolume(musikVolume);
+}
+
+// Init musik
+renderMusikList();
+updatePlayerUI(musikTracks[0]);
+buildWaveform();
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// ── INIT ──
+document.getElementById('today-date').textContent = new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+renderTracker();
+renderLib();
+renderSchedule();
+updateChart('this');
+updateITDisplay();
+countUp('cnt-users', 12400);
+countUp('cnt-ex', 52);
+countUp('cnt-prog', 18);
+</script>
+</body>
+</html>
