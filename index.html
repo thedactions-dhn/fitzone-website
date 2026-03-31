@@ -371,148 +371,286 @@
   .host-card.recommended .host-btn { background: var(--c-primary); border-color: var(--c-primary); color: white; }
   .host-card.recommended .host-btn:hover { background: #2563eb; }
 
-/* ── MUSIK (INSTAGRAM STYLE) ── */
-  #musik { background: var(--c-surface); }
-  .musik-layout {
-    display: grid; grid-template-columns: 320px 1fr; gap: 24px;
-    max-width: 1100px; align-items: start;
-  }
-  
-  /* Player Card - IG Style */
-  .musik-player-card {
+/* ── MUSIK — Full Redesign ── */
+  #musik {
     background: var(--c-bg);
-    border: 1px solid var(--c-border);
-    border-radius: 24px;
-    padding: 32px 24px;
+    position: relative; overflow: hidden;
+  }
+  /* Ambient glow background */
+  #musik::before {
+    content: '';
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse 60% 50% at 20% 60%, rgba(220,39,67,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 80% 30%, rgba(59,130,246,0.06) 0%, transparent 60%);
+  }
+
+  .musik-layout {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 28px;
+    max-width: 1160px;
+    align-items: start;
+    position: relative; z-index: 1;
+  }
+
+  /* ── PLAYER CARD ── */
+  .musik-player-card {
+    background: rgba(22,22,31,0.9);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 28px;
+    padding: 32px 28px 28px;
     position: sticky; top: 80px;
     display: flex; flex-direction: column; align-items: center;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04) inset;
   }
-  
-  /* IG Story Gradient Ring for Cover */
+
+  /* IG Story ring — animated */
   .musik-cover-wrap {
     position: relative;
-    width: 180px; height: 180px;
+    width: 196px; height: 196px;
     border-radius: 50%;
-    margin-bottom: 24px;
-    padding: 4px; /* Space for the gradient ring */
-    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    margin-bottom: 28px;
+    padding: 3px;
+    background: conic-gradient(from 180deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888, #f09433);
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 8px 24px rgba(220, 39, 67, 0.2);
+    box-shadow: 0 0 40px rgba(220,39,67,0.25), 0 12px 32px rgba(0,0,0,0.4);
+    transition: box-shadow 0.4s ease;
+  }
+  .musik-cover-wrap.playing-glow {
+    box-shadow: 0 0 60px rgba(220,39,67,0.45), 0 12px 32px rgba(0,0,0,0.4);
+    animation: ring-spin 6s linear infinite;
+  }
+  @keyframes ring-spin {
+    to { filter: hue-rotate(360deg); }
   }
   .musik-cover-inner {
     width: 100%; height: 100%;
     border-radius: 50%;
     background: var(--c-card);
-    border: 3px solid var(--c-bg); /* Inner border to separate gradient */
+    border: 4px solid rgba(10,10,15,0.95);
     display: flex; align-items: center; justify-content: center;
     overflow: hidden;
+    transition: transform 0.3s ease;
   }
-  .musik-cover-fallback { font-size: 70px; }
-  
+  .musik-cover-inner.playing {
+    animation: spin-slow 18s linear infinite;
+  }
+  .musik-cover-fallback { font-size: 76px; line-height: 1; }
+
+  /* Now playing info */
   .musik-now-title {
-    font-size: 18px; font-weight: 700; color: var(--c-text);
-    text-align: center; margin-bottom: 6px; width: 100%;
+    font-size: 17px; font-weight: 700; color: var(--c-text);
+    text-align: center; margin-bottom: 5px; width: 100%;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    letter-spacing: -0.01em;
   }
   .musik-now-artist {
-    font-size: 14px; color: var(--c-muted); margin-bottom: 24px; text-align: center;
+    font-size: 13px; color: var(--c-muted);
+    margin-bottom: 6px; text-align: center; letter-spacing: 0.02em;
   }
 
-  /* Progress / Waveform bar */
-  .musik-progress-wrap { width: 100%; margin-bottom: 20px; cursor: pointer; }
+  /* Mini equalizer bars shown when playing */
+  .musik-eq-bars {
+    display: flex; align-items: flex-end; gap: 3px; height: 16px;
+    margin-bottom: 20px; opacity: 0; transition: opacity 0.3s;
+  }
+  .musik-eq-bars.active { opacity: 1; }
+  .musik-eq-bar {
+    width: 3px; border-radius: 2px;
+    background: linear-gradient(to top, #dc2743, #f09433);
+    animation: eq-bounce 0.6s ease-in-out infinite alternate;
+    min-height: 4px;
+  }
+  .musik-eq-bar:nth-child(1) { animation-delay: 0s; }
+  .musik-eq-bar:nth-child(2) { animation-delay: 0.1s; }
+  .musik-eq-bar:nth-child(3) { animation-delay: 0.2s; }
+  .musik-eq-bar:nth-child(4) { animation-delay: 0.15s; }
+  .musik-eq-bar:nth-child(5) { animation-delay: 0.05s; }
+  @keyframes eq-bounce {
+    0%   { height: 4px; }
+    100% { height: 14px; }
+  }
+
+  /* Waveform / progress */
+  .musik-progress-wrap { width: 100%; margin-bottom: 16px; }
   .musik-waveform {
-    display: flex; align-items: center; gap: 3px; height: 40px; margin-bottom: 8px; cursor: pointer;
+    display: flex; align-items: center; gap: 2px;
+    height: 44px; margin-bottom: 6px; cursor: pointer;
+    padding: 4px 0;
   }
   .musik-waveform-bar {
-    flex: 1; border-radius: 4px; background: rgba(255,255,255,0.08);
-    transition: background 0.2s, height 0.1s; min-height: 4px;
+    flex: 1; border-radius: 3px;
+    background: rgba(255,255,255,0.07);
+    transition: background 0.15s; min-height: 3px;
+    cursor: pointer;
   }
-  .musik-waveform-bar.played { background: linear-gradient(to top, #f09433, #dc2743); }
-  .musik-waveform-bar.playing-bar { animation: waveAnim 0.6s ease-in-out infinite alternate; }
-  
+  .musik-waveform-bar:hover { background: rgba(255,255,255,0.18); }
+  .musik-waveform-bar.played { background: linear-gradient(to top, #dc2743, #f09433); }
+  .musik-waveform-bar.playing-bar {
+    background: linear-gradient(to top, #dc2743, #f09433);
+    animation: waveAnim 0.5s ease-in-out infinite alternate;
+  }
+  @keyframes waveAnim {
+    from { opacity: 0.7; }
+    to   { opacity: 1; transform: scaleY(1.15); }
+  }
   .musik-time-row {
     display: flex; justify-content: space-between;
-    font-family: var(--font-mono); font-size: 12px; color: var(--c-dim);
+    font-family: var(--font-mono); font-size: 11px; color: var(--c-dim);
   }
 
-  /* Controls - Minimalist */
+  /* Controls */
   .musik-controls {
-    display: flex; align-items: center; justify-content: center; gap: 20px;
-    width: 100%; margin-bottom: 24px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 16px; width: 100%; margin-bottom: 22px;
   }
   .musik-ctrl-btn {
-    background: none; border: none; color: var(--c-text);
-    cursor: pointer; font-size: 20px; transition: transform 0.2s;
+    background: none; border: none; color: var(--c-muted);
+    cursor: pointer; font-size: 18px;
+    transition: all 0.2s; border-radius: 50%;
+    width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
   }
-  .musik-ctrl-btn:hover { transform: scale(1.1); color: #dc2743; }
-  .musik-ctrl-btn.active { color: #bc1888; }
-  
-  .musik-play-btn {
-    width: 64px; height: 64px; border-radius: 50%;
-    background: var(--c-text); color: var(--c-bg);
-    border: none; font-size: 24px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s; padding-left: 4px; /* visually center the play icon */
-  }
-  .musik-play-btn.playing { padding-left: 0; } /* reset padding for pause icon */
-  .musik-play-btn:hover { transform: scale(1.05); }
+  .musik-ctrl-btn:hover { color: var(--c-text); background: rgba(255,255,255,0.05); transform: scale(1.1); }
+  .musik-ctrl-btn.active { color: #dc2743; }
 
-  /* Volume Slider (Balok Nada) */
-  .musik-volume-row {
-    display: flex; align-items: center; gap: 12px; width: 100%;
-    background: var(--c-card); padding: 12px 16px; border-radius: 12px;
+  .musik-play-btn {
+    width: 60px; height: 60px; border-radius: 50%;
+    background: linear-gradient(135deg, #dc2743 0%, #bc1888 100%);
+    color: white; border: none; font-size: 22px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(220,39,67,0.4);
   }
-  .musik-vol-icon { font-size: 16px; color: var(--c-muted); }
+  .musik-play-btn:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(220,39,67,0.55); }
+  .musik-play-btn.playing { padding-left: 0; }
+
+  /* Volume */
+  .musik-volume-row {
+    display: flex; align-items: center; gap: 10px; width: 100%;
+    background: rgba(255,255,255,0.04); padding: 10px 14px;
+    border-radius: 12px; border: 1px solid var(--c-border);
+  }
+  .musik-vol-icon { font-size: 15px; color: var(--c-muted); flex-shrink: 0; }
   .musik-vol-slider {
     -webkit-appearance: none; appearance: none;
-    flex: 1; height: 6px; border-radius: 3px;
-    background: rgba(255,255,255,0.1); outline: none;
+    flex: 1; height: 4px; border-radius: 2px;
+    background: rgba(255,255,255,0.1); outline: none; cursor: pointer;
   }
   .musik-vol-slider::-webkit-slider-thumb {
     -webkit-appearance: none; appearance: none;
-    width: 16px; height: 16px; border-radius: 50%;
-    background: #fff; cursor: pointer;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: linear-gradient(135deg, #dc2743, #bc1888); cursor: pointer;
+    box-shadow: 0 0 6px rgba(220,39,67,0.4);
   }
-  .musik-vol-num { font-family: var(--font-mono); font-size: 12px; color: var(--c-muted); min-width: 24px; }
+  .musik-vol-num { font-family: var(--font-mono); font-size: 11px; color: var(--c-dim); min-width: 22px; text-align: right; }
 
-  /* Playlist View */
+  /* ── PLAYLIST PANEL ── */
   .musik-playlist-wrap {
-    background: var(--c-card); border: 1px solid var(--c-border);
+    background: rgba(17,17,24,0.8);
+    border: 1px solid rgba(255,255,255,0.08);
     border-radius: 24px; overflow: hidden;
+    backdrop-filter: blur(12px);
   }
   .musik-playlist-header {
-    padding: 24px; display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--c-border);
+    background: rgba(255,255,255,0.02);
+  }
+  .musik-playlist-title {
+    font-size: 15px; font-weight: 700;
+    display: flex; align-items: center; gap: 10px; color: var(--c-text);
+  }
+  .musik-playlist-count {
+    font-size: 12px; color: var(--c-muted);
+    background: rgba(255,255,255,0.06); padding: 4px 10px;
+    border-radius: 100px; font-family: var(--font-mono);
+  }
+
+  /* Search bar in playlist */
+  .musik-search-wrap {
+    padding: 14px 16px 8px;
     border-bottom: 1px solid var(--c-border);
   }
-  .musik-playlist-title { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-  .musik-list { max-height: 580px; overflow-y: auto; padding: 12px 0; }
-  .musik-list::-webkit-scrollbar { width: 6px; }
-  .musik-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
-  
+  .musik-search {
+    width: 100%; padding: 9px 14px 9px 36px;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--c-border);
+    border-radius: 10px; color: var(--c-text); font-size: 13px;
+    font-family: var(--font-body); outline: none;
+    transition: border-color 0.2s;
+  }
+  .musik-search::placeholder { color: var(--c-dim); }
+  .musik-search:focus { border-color: rgba(220,39,67,0.4); background: rgba(255,255,255,0.07); }
+  .musik-search-icon {
+    position: absolute; left: 28px; top: 50%; transform: translateY(-50%);
+    font-size: 14px; color: var(--c-dim); pointer-events: none;
+  }
+  .musik-search-wrap { position: relative; }
+
+  .musik-list { max-height: 540px; overflow-y: auto; padding: 8px 0; }
+  .musik-list::-webkit-scrollbar { width: 4px; }
+  .musik-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+
+  /* Playlist item */
   .musik-item {
-    display: flex; align-items: center; gap: 16px; padding: 12px 24px;
-    cursor: pointer; transition: background 0.2s;
+    display: flex; align-items: center; gap: 14px;
+    padding: 10px 20px; cursor: pointer;
+    transition: background 0.15s; border-radius: 0;
+    position: relative;
   }
-  .musik-item:hover { background: rgba(255,255,255,0.02); }
-  .musik-item.active { background: rgba(255,255,255,0.05); }
-  
+  .musik-item::after {
+    content: ''; position: absolute; left: 20px; right: 20px; bottom: 0;
+    height: 1px; background: var(--c-border); opacity: 0.5;
+  }
+  .musik-item:last-child::after { display: none; }
+  .musik-item:hover { background: rgba(255,255,255,0.03); }
+  .musik-item.active { background: rgba(220,39,67,0.06); }
+
   .musik-item-cover {
-    width: 48px; height: 48px; border-radius: 50%;
-    background: linear-gradient(135deg, #2a2a35, #16161f);
+    width: 46px; height: 46px; border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 20px; position: relative;
+    font-size: 20px; position: relative; flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,0.06);
   }
-  .musik-item.active .musik-item-cover::after {
-    content: ''; position: absolute; inset: -3px;
-    border-radius: 50%; padding: 2px;
-    background: linear-gradient(45deg, #f09433, #dc2743, #bc1888);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor; mask-composite: exclude;
+  .musik-item.active .musik-item-cover {
+    border-color: rgba(220,39,67,0.4);
+    box-shadow: 0 0 12px rgba(220,39,67,0.2);
   }
-  .musik-item-title { font-size: 14px; font-weight: 600; color: var(--c-text); }
-  .musik-item.active .musik-item-title { background: linear-gradient(45deg, #f09433, #bc1888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .musik-item-artist { font-size: 12px; color: var(--c-muted); margin-top: 4px; }
+
+  .musik-item-info { flex: 1; min-width: 0; }
+  .musik-item-title {
+    font-size: 13px; font-weight: 600; color: var(--c-text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .musik-item.active .musik-item-title { color: #f09433; }
+  .musik-item-artist { font-size: 11px; color: var(--c-muted); margin-top: 2px; }
+
+  .musik-item-num {
+    font-family: var(--font-mono); font-size: 11px; color: var(--c-dim);
+    flex-shrink: 0; min-width: 32px; text-align: right;
+  }
+
+  /* Playing animation bars in list */
+  .musik-playing-anim {
+    display: flex; align-items: flex-end; gap: 2px; height: 14px;
+  }
+  .musik-playing-anim span {
+    display: block; width: 3px; border-radius: 2px;
+    background: linear-gradient(to top, #dc2743, #f09433);
+    animation: eq-bounce 0.5s ease-in-out infinite alternate;
+  }
+  .musik-playing-anim span:nth-child(1) { animation-delay: 0s; }
+  .musik-playing-anim span:nth-child(2) { animation-delay: 0.1s; }
+  .musik-playing-anim span:nth-child(3) { animation-delay: 0.2s; }
+  .musik-playing-anim span:nth-child(4) { animation-delay: 0.15s; }
+  .musik-playing-anim span:nth-child(5) { animation-delay: 0.05s; }
+
+  /* ── RESPONSIVE MUSIK ── */
+  @media(max-width: 900px) {
+    .musik-layout { grid-template-columns: 1fr; }
+    .musik-player-card { position: static; max-width: 420px; margin: 0 auto; }
+  }
 
   /* ── FOOTER ── */
   footer {
@@ -566,6 +704,10 @@
     .hero-stats { gap: 20px; }
     .timer-wrap, .bmi-wrap { grid-template-columns: 1fr; }
     .ex-row { grid-template-columns: 1fr 80px 90px 40px; gap: 8px; }
+    .musik-layout { grid-template-columns: 1fr; }
+    .musik-player-card { position: static; max-width: 100%; border-radius: 20px; padding: 24px 20px; }
+    .musik-cover-wrap { width: 160px; height: 160px; }
+    .musik-list { max-height: 400px; }
   }
   
   /* ── ANIMASI TRANSISI MUSIK ── */
@@ -902,20 +1044,37 @@
 
 <!-- MUSIK -->
 <section id="musik">
-  <div class="sec-label fade-up">Playlist Favorit</div>
+  <div class="sec-label fade-up">🎵 Playlist Favorit</div>
   <div class="sec-title fade-up">Musik Saat Olahraga</div>
-  <p class="sec-sub fade-up">Dengarkan musik favoritmu lewat YouTube tanpa berhenti saat berpindah halaman.</p>
+  <p class="sec-sub fade-up">Dengarkan playlist favoritmu sambil latihan. Jika lagu tidak bisa diputar, akan otomatis lanjut ke berikutnya.</p>
+
   <div class="musik-layout fade-up">
-    <!-- PLAYER CARD -->
-<div class="musik-player-card">
+    <!-- ── PLAYER CARD ── -->
+    <div class="musik-player-card">
+
+      <!-- Cover art dengan IG ring -->
       <div class="musik-cover-wrap" id="musikCoverWrap">
-        <div class="musik-cover-inner">
+        <div class="musik-cover-inner" id="musikCoverInner">
           <span class="musik-cover-fallback" id="musikCoverFallback">🎵</span>
-          <img class="musik-cover-img" id="musikCoverImg" src="" alt="" style="display:none">
+          <img class="musik-cover-img" id="musikCoverImg" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%">
         </div>
       </div>
-      <div class="musik-now-title" id="musikNowTitle">Pilih lagu untuk diputar</div>
-      <div class="musik-now-artist" id="musikNowArtist">—</div>
+
+      <!-- Judul & artis -->
+      <div class="musik-now-title" id="musikNowTitle">Ketuk lagu untuk diputar</div>
+      <div class="musik-now-artist" id="musikNowArtist">FitZone Playlist</div>
+
+      <!-- Mini EQ bars — muncul saat bermain -->
+      <div class="musik-eq-bars" id="musikEqBars">
+        <div class="musik-eq-bar" style="height:8px"></div>
+        <div class="musik-eq-bar" style="height:12px"></div>
+        <div class="musik-eq-bar" style="height:6px"></div>
+        <div class="musik-eq-bar" style="height:14px"></div>
+        <div class="musik-eq-bar" style="height:9px"></div>
+      </div>
+
+      <!-- Status loading -->
+      <div id="musikStatusBar" style="font-size:11px;color:var(--c-muted);min-height:14px;margin-top:-10px;margin-bottom:14px;text-align:center;transition:opacity .3s;"></div>
 
       <!-- Waveform Progress -->
       <div class="musik-progress-wrap">
@@ -932,7 +1091,7 @@
         <button class="musik-ctrl-btn" onclick="musikPrev()" title="Sebelumnya">⏮</button>
         <button class="musik-play-btn" id="musikPlayBtn" onclick="toggleMusik()">▶</button>
         <button class="musik-ctrl-btn" onclick="musikNext()" title="Selanjutnya">⏭</button>
-        <button class="musik-ctrl-btn" id="musikRepeatBtn" title="Ulangi 1 lagu" onclick="toggleRepeat()">🔁</button>
+        <button class="musik-ctrl-btn" id="musikRepeatBtn" title="Ulangi" onclick="toggleRepeat()">🔁</button>
       </div>
 
       <!-- Volume -->
@@ -943,12 +1102,21 @@
       </div>
     </div>
 
-    <!-- PLAYLIST -->
+    <!-- ── PLAYLIST PANEL ── -->
     <div class="musik-playlist-wrap">
       <div class="musik-playlist-header">
-        <span class="musik-playlist-title">🎶 Playlist</span>
+        <span class="musik-playlist-title">
+          🎶 Playlist Olahraga
+        </span>
         <span class="musik-playlist-count" id="musikPlaylistCount">0 lagu</span>
       </div>
+
+      <!-- Search bar -->
+      <div class="musik-search-wrap">
+        <span class="musik-search-icon">🔍</span>
+        <input class="musik-search" id="musikSearch" type="text" placeholder="Cari lagu atau artis..." oninput="filterMusik(this.value)">
+      </div>
+
       <div class="musik-list" id="musikList"></div>
     </div>
   </div>
@@ -1210,42 +1378,39 @@ function countUp(id, end, dur=1200) {
 }
 
 // ── MUSIK ──
+// Track yang embedding-disabled telah dihapus/diganti versi alternatif
+// Auto-skip aktif: jika video diblokir, langsung lanjut ke lagu berikutnya
 const musikTracks = [
-  { title: "Melati", artist: "Aku Jeje", ytId: "5ZKfQjBfFIE", emoji: "🌸" },
-  { title: "Melati (Demo Version)", artist: "Aku Jeje", ytId: "RmVHpkAnUSA", emoji: "🌼" },
-  { title: "Waktu", artist: "Aku Jeje", ytId: "EvexJv6XYFE", emoji: "⏳" },
-  { title: "Lihat Kebunku (Taman Bunga)", artist: "Aku Jeje", ytId: "q6Pv4t2JLgY", emoji: "🌺" },
-  { title: "When I Close My Eyes", artist: "Tom Odell", ytId: "u9c8VRtZhLs", emoji: "👁️" },
-  { title: "Abadi (Indo Version)", artist: "Dendi Nata", ytId: "wqHKxb9M2yY", emoji: "♾️" },
-  { title: "Ini Abadi", artist: "Perunggu", ytId: "j5LY8GzCWk0", emoji: "🥉" },
-  { title: "33x", artist: "Perunggu", ytId: "N5lJdRVVSy8", emoji: "🔢" },
-  { title: "Multo", artist: "Cup of Joe", ytId: "2v2WGJikT2Y", emoji: "👻" },
-  { title: "About You", artist: "The 1975", ytId: "FzZHt7Q3VzA", emoji: "💭" },
-  { title: "her", artist: "JVKE", ytId: "tvHs6GaHJoE", emoji: "💛" },
   { title: "golden hour", artist: "JVKE", ytId: "PEM0Vs8jf1w", emoji: "🌅" },
+  { title: "her", artist: "JVKE", ytId: "tvHs6GaHJoE", emoji: "💛" },
   { title: "golden hour (piano instrumental)", artist: "Chilled Pig", ytId: "mMFrN-K8_5Q", emoji: "🎹" },
+  { title: "photograph (piano instrumental)", artist: "Chilled Pig", ytId: "FfiBFkUSu6s", emoji: "🎹" },
+  { title: "blue", artist: "yung kai", ytId: "2H6gCH7y2Vs", emoji: "🩵" },
+  { title: "About You", artist: "The 1975", ytId: "FzZHt7Q3VzA", emoji: "💭" },
+  { title: "Multo", artist: "Cup of Joe", ytId: "2v2WGJikT2Y", emoji: "👻" },
   { title: "Euphoria", artist: "Txmy", ytId: "Jv1ksMY5JKM", emoji: "✨" },
   { title: "Seraphic", artist: "Txmy", ytId: "r73VYJ2W7oY", emoji: "😇" },
-  { title: "sempurna (guitar)", artist: "emptiness", ytId: "RJk7oJkIBJ0", emoji: "🎸" },
   { title: "For a Moment", artist: "Alej", ytId: "i3WV3QLHM5M", emoji: "🕰️" },
-  { title: "March", artist: "Art Music", ytId: "OcJGHeDVkpA", emoji: "🎼" },
-  { title: "blue", artist: "yung kai", ytId: "2H6gCH7y2Vs", emoji: "🩵" },
-  { title: "Sampai Akhir Waktu", artist: "Yovie & Nuno", ytId: "5VJH5mCHFZw", emoji: "💍" },
-  { title: "Resah Jadi Luka", artist: "Daun Jatuh", ytId: "lKKzq6bfxYQ", emoji: "🍂" },
-  { title: "photograph (piano instrumental)", artist: "Chilled Pig", ytId: "FfiBFkUSu6s", emoji: "🎹" },
-  { title: "Photograph", artist: "Ryan Condrey", ytId: "3QWrfKmS4z8", emoji: "📷" },
-  { title: "The Man Who Can't Be Moved", artist: "The Script", ytId: "hbLJKLBMdkc", emoji: "🚶" },
-  { title: "Untuk Perempuan Yang Sedang Di Pelukan", artist: "Payung Teduh", ytId: "l5lDm_4aBaI", emoji: "🍁" },
-  { title: "Gemuruh Riuh", artist: "Mighfar Suganda", ytId: "SNz1OGHbPq0", emoji: "⛈️" },
-  { title: "Yang Patah Tumbuh Yang Hilang Berganti", artist: "Banda Neira", ytId: "y9EwSMGFZnk", emoji: "🌿" },
-  { title: "Hitam Putih", artist: "Fourtwnty", ytId: "4-nLyoAyf8k", emoji: "⚫" },
   { title: "Golden Hour (Fairy Version)", artist: "oleksandr.mp3", ytId: "EhcvkLQiqFk", emoji: "🧚" },
   { title: "Favorite", artist: "Austin George", ytId: "t9CPBepO5bA", emoji: "⭐" },
-  { title: "Binaon naman", artist: "KAKA DOy SILVA", ytId: "jV6e5tPK3vs", emoji: "🎙️" },
-  { title: "Tamu Undangan", artist: "Mocil Fvnky V2", ytId: "5DvGVL7xDzc", emoji: "🎉" },
-  { title: "KAWITANING SINAWANG (feat. Akbar Handoko)", artist: "Hindia Prameswara", ytId: "WL5V4GaHMOE", emoji: "🌙" },
+  { title: "March", artist: "Art Music", ytId: "OcJGHeDVkpA", emoji: "🎼" },
+  { title: "Abadi", artist: "Dendi Nata", ytId: "wqHKxb9M2yY", emoji: "♾️" },
+  { title: "Ini Abadi", artist: "Perunggu", ytId: "j5LY8GzCWk0", emoji: "🥉" },
+  { title: "33x", artist: "Perunggu", ytId: "N5lJdRVVSy8", emoji: "🔢" },
+  { title: "Yang Patah Tumbuh Yang Hilang Berganti", artist: "Banda Neira", ytId: "y9EwSMGFZnk", emoji: "🌿" },
+  { title: "Hitam Putih", artist: "Fourtwnty", ytId: "4-nLyoAyf8k", emoji: "⚫" },
+  { title: "Gemuruh Riuh", artist: "Mighfar Suganda", ytId: "SNz1OGHbPq0", emoji: "⛈️" },
+  { title: "Masa ini, Nanti, dan Masa Indah Lainnya", artist: "Nuca", ytId: "qbL9jvQ6yz8", emoji: "🐣" },
+  { title: "Sampai Akhir Waktu", artist: "Yovie & Nuno", ytId: "5VJH5mCHFZw", emoji: "💍" },
+  { title: "Untuk Perempuan Yang Sedang Di Pelukan", artist: "Payung Teduh", ytId: "l5lDm_4aBaI", emoji: "🍁" },
+  { title: "Melati", artist: "Aku Jeje", ytId: "5ZKfQjBfFIE", emoji: "🌸" },
+  { title: "Waktu", artist: "Aku Jeje", ytId: "EvexJv6XYFE", emoji: "⏳" },
+  { title: "sempurna (guitar)", artist: "emptiness", ytId: "RJk7oJkIBJ0", emoji: "🎸" },
+  { title: "Photograph", artist: "Ryan Condrey", ytId: "3QWrfKmS4z8", emoji: "📷" },
+  { title: "The Man Who Can't Be Moved", artist: "The Script", ytId: "hbLJKLBMdkc", emoji: "🚶" },
+  { title: "Resah Jadi Luka", artist: "Daun Jatuh", ytId: "lKKzq6bfxYQ", emoji: "🍂" },
+  { title: "KAWITANING SINAWANG", artist: "Hindia Prameswara", ytId: "WL5V4GaHMOE", emoji: "🌙" },
   { title: "Tulus", artist: "Febri Handika", ytId: "1KU0VJxfMRs", emoji: "💚" },
-  { title: "Masa ini, Nanti, dan Masa Indah lainnya", artist: "Nuca", ytId: "qbL9jvQ6yz8", emoji: "🐣" },
 ];
 
 let musikCurrentIdx = 0;
@@ -1270,11 +1435,25 @@ window.onYouTubeIframeAPIReady = function() {
   ytReady = true;
   ytPlayer = new YT.Player('ytPlayer', {
     height: '1', width: '1',
-    playerVars: { autoplay: 0, controls: 0, rel: 0, modestbranding: 1 },
+    host: 'https://www.youtube-nocookie.com',
+    playerVars: { autoplay: 0, controls: 0, rel: 0, modestbranding: 1, origin: window.location.origin || '*' },
     events: {
       onReady: function() {},
+      onError: function(e) {
+        // Error 101 & 150 = video tidak bisa diembed (diblokir pemilik)
+        // Error 2 = videoId tidak valid, Error 5 = HTML5 error
+        // Error 100 = video tidak ditemukan / private
+        const blocked = [2, 100, 101, 150, 5];
+        if (blocked.includes(e.data)) {
+          clearSkipTimeout();
+          const t = musikTracks[musikCurrentIdx];
+          showToast('⚠️ "' + t.title + '" tidak bisa diputar — skip');
+          setTimeout(() => musikNext(), 1200);
+        }
+      },
       onStateChange: function(e) {
         if (e.data === YT.PlayerState.ENDED) {
+          stopProgressPoll();
           if (musikRepeat) {
             ytPlayer.seekTo(0);
             ytPlayer.playVideo();
@@ -1283,13 +1462,20 @@ window.onYouTubeIframeAPIReady = function() {
           }
         }
         if (e.data === YT.PlayerState.PLAYING) {
+          clearSkipTimeout();
           musikIsPlaying = true;
           updatePlayBtn();
           startProgressPoll();
+          const sb = document.getElementById('musikStatusBar');
+          if (sb) sb.textContent = '';
         }
-        if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.BUFFERING) {
-          musikIsPlaying = (e.data === YT.PlayerState.BUFFERING);
-          if (e.data === YT.PlayerState.PAUSED) stopProgressPoll();
+        if (e.data === YT.PlayerState.PAUSED) {
+          musikIsPlaying = false;
+          stopProgressPoll();
+          updatePlayBtn();
+        }
+        if (e.data === YT.PlayerState.BUFFERING) {
+          // tetap tampilkan playing saat buffering
           updatePlayBtn();
         }
       }
@@ -1348,18 +1534,42 @@ function stopProgressPoll() {
   if (musikProgressInterval) { clearInterval(musikProgressInterval); musikProgressInterval = null; }
 }
 
+let musikFilterQuery = '';
+
+function filterMusik(q) {
+  musikFilterQuery = q.toLowerCase();
+  renderMusikList();
+}
+
 function renderMusikList() {
   const list = document.getElementById('musikList');
-  list.innerHTML = musikTracks.map((t, i) => `
-    <div class="musik-item ${i === musikCurrentIdx ? 'active' : ''}" onclick="playMusikAt(${i})" id="mitem-${i}">
+  const q = musikFilterQuery;
+  const filtered = q
+    ? musikTracks.filter((t, i) => t.title.toLowerCase().includes(q) || t.artist.toLowerCase().includes(q))
+    : musikTracks;
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--c-dim);font-size:13px;">Tidak ada lagu ditemukan 🎵</div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map((t) => {
+    const i = musikTracks.indexOf(t);
+    const isActive = i === musikCurrentIdx;
+    return `
+    <div class="musik-item ${isActive ? 'active' : ''}" onclick="playMusikAt(${i})" id="mitem-${i}">
       <div class="musik-item-cover" style="background:${getCoverGradient(i)}">${t.emoji}</div>
       <div class="musik-item-info">
         <div class="musik-item-title">${t.title}</div>
         <div class="musik-item-artist">${t.artist}</div>
       </div>
-      <div class="musik-item-num">${i === musikCurrentIdx ? `<div class="musik-playing-anim"><span></span><span></span><span></span><span></span><span></span></div>` : String(i+1).padStart(2,'0')}</div>
-    </div>
-  `).join('');
+      <div class="musik-item-num">${isActive
+        ? '<div class="musik-playing-anim"><span></span><span></span><span></span><span></span><span></span></div>'
+        : String(i + 1).padStart(2, '0')
+      }</div>
+    </div>`;
+  }).join('');
+
   document.getElementById('musikPlaylistCount').textContent = musikTracks.length + ' lagu';
 }
 
@@ -1377,67 +1587,87 @@ function updatePlayerUI(t) {
   const titleEl = document.getElementById('musikNowTitle');
   const artistEl = document.getElementById('musikNowArtist');
   const coverWrap = document.getElementById('musikCoverWrap');
-  
-  // 1. Hapus class animasi untuk mereset
+
+  // Reset animasi
   titleEl.classList.remove('animate-text');
   artistEl.classList.remove('animate-text');
   coverWrap.classList.remove('animate-cover');
-  
-  // 2. Trik 'Reflow' agar browser merestart animasi dari awal
-  void titleEl.offsetWidth; 
-  
-  // 3. Update teks dan emoji
+  void titleEl.offsetWidth;
+
+  // Update konten
   titleEl.textContent = t.title;
   artistEl.textContent = t.artist;
-  document.getElementById('musikCoverFallback').style.display = 'flex';
-  document.getElementById('musikCoverFallback').style.alignItems = 'center';
-  document.getElementById('musikCoverFallback').style.justifyContent = 'center';
-  document.getElementById('musikCoverFallback').textContent = t.emoji;
-  document.getElementById('musikCoverImg').style.display = 'none';
-  
-  // 4. Tambahkan kembali class animasinya
+
+  const fallback = document.getElementById('musikCoverFallback');
+  const img = document.getElementById('musikCoverImg');
+  fallback.style.display = 'flex';
+  fallback.style.alignItems = 'center';
+  fallback.style.justifyContent = 'center';
+  fallback.textContent = t.emoji;
+  img.style.display = 'none';
+
+  // Animasi masuk
   titleEl.classList.add('animate-text');
   artistEl.classList.add('animate-text');
   coverWrap.classList.add('animate-cover');
 
-  // Update elemen lainnya
   buildWaveform();
   renderMusikList();
-  
-  // Scroll playlist otomatis ke lagu yang aktif
-  const activeItem = document.getElementById('mitem-' + musikCurrentIdx);
-  if (activeItem) activeItem.scrollIntoView({block:'nearest', behavior:'smooth'});
+
+  // Scroll ke lagu aktif di playlist
+  setTimeout(() => {
+    const activeItem = document.getElementById('mitem-' + musikCurrentIdx);
+    if (activeItem) activeItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }, 50);
 }
 
 function updatePlayBtn() {
   const btn = document.getElementById('musikPlayBtn');
-  const coverInner = document.querySelector('.musik-cover-inner'); // Ambil elemen inner cover
-  
-  // Ubah icon tombol Play/Pause
+  const coverInner = document.getElementById('musikCoverInner');
+  const coverWrap = document.getElementById('musikCoverWrap');
+  const eqBars = document.getElementById('musikEqBars');
+
   btn.textContent = musikIsPlaying ? '⏸' : '▶';
   btn.classList.toggle('playing', musikIsPlaying);
-  
-  // Putar atau hentikan animasi cover bundar
-  if (coverInner) {
-    if (musikIsPlaying) {
-      coverInner.classList.add('playing');
-    } else {
-      coverInner.classList.remove('playing');
-    }
-  }
+
+  // Cover spin animation
+  if (coverInner) coverInner.classList.toggle('playing', musikIsPlaying);
+
+  // Cover ring glow when playing
+  if (coverWrap) coverWrap.classList.toggle('playing-glow', musikIsPlaying);
+
+  // EQ bars visibility
+  if (eqBars) eqBars.classList.toggle('active', musikIsPlaying);
+}
+
+let musikSkipTimeout = null;
+function clearSkipTimeout() {
+  if (musikSkipTimeout) { clearTimeout(musikSkipTimeout); musikSkipTimeout = null; }
 }
 
 function playMusikAt(idx) {
   musikCurrentIdx = idx;
   const t = musikTracks[idx];
   updatePlayerUI(t);
+  clearSkipTimeout();
   if (!ytReady) {
     setTimeout(() => playMusikAt(idx), 500); return;
   }
+  const statusBar = document.getElementById('musikStatusBar');
+  if (statusBar) statusBar.textContent = '⏳ Memuat...';
   ytPlayer.loadVideoById({ videoId: t.ytId });
   ytPlayer.setVolume(musikVolume);
   musikIsPlaying = true;
   updatePlayBtn();
+  // Timeout: jika tidak mulai dalam 9 detik, anggap diblokir dan skip
+  musikSkipTimeout = setTimeout(() => {
+    const state = ytPlayer.getPlayerState ? ytPlayer.getPlayerState() : -1;
+    if (state === -1) {
+      if (statusBar) statusBar.textContent = '';
+      showToast('⚠️ "' + t.title + '" tidak bisa diputar — skip otomatis');
+      musikNext();
+    }
+  }, 9000);
 }
 
 function toggleMusik() {
